@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "atcoder-readme-stats"
+version = "0.1.0"
+description = ""
+authors = ["iwbc-mzk <46069337+iwbc-mzk@users.noreply.github.com>"]
+readme = "README.md"
+packages = [{include = "atcoder_readme_stats"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
