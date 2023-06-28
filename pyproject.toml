@@ -8,6 +8,8 @@ packages = [{include = "atcoder_readme_stats"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+fastapi = "^0.98.0"
+uvicorn = {extras = ["standard"], version = "^0.22.0"}
 
 
 [build-system]
