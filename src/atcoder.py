@@ -29,35 +29,58 @@ class Atcoder:
 
         return self._userdata
 
-    def _search_rank(self, soup: BeautifulSoup) -> int:
-        rank_title = soup.find(string="Rank").parent
-        rank = int(rank_title.next_sibling.string[:-2])
+    def _search_rank(self, soup: BeautifulSoup) -> int | None:
+        rank = None
+        rank_label_tag = soup.find("th", string="Rank")
+        if rank_label_tag:
+            rank_val_tag = rank_label_tag.next_sibling
+            if rank_val_tag:
+                rank = int(rank_val_tag.text[:-2])
 
         return rank
 
-    def _search_rating(self, soup: BeautifulSoup) -> int:
-        rating_title = soup.find(string="Rating").parent
-        rating_value = rating_title.next_sibling
-        rating = int(rating_value.find_all("span")[0].string)
+    def _search_rating(self, soup: BeautifulSoup) -> int | None:
+        rating = None
+        rating_label_tag = soup.find("th", string="Rating")
+        if rating_label_tag:
+            rating_val_tag = rating_label_tag.next_sibling
+            if rating_val_tag:
+                rating_tag = rating_val_tag.find_all_next("span")
+                if rating_tag:
+                    rating = int(rating_tag[0].text)
 
         return rating
 
-    def _search_highest_rating(self, soup: BeautifulSoup) -> int:
-        highest_rating_title = soup.find(string="Highest Rating").parent
-        highest_rating_value = highest_rating_title.next_sibling
-        highest_rating = int(highest_rating_value.find_all("span")[0].string)
+    def _search_highest_rating(self, soup: BeautifulSoup) -> int | None:
+        highest_rating = None
+        highest_rating_label_tag = soup.find("th", string="Highest Rating")
+        if highest_rating_label_tag:
+            highest_rating_val_tag = highest_rating_label_tag.next_sibling
+            if highest_rating_val_tag:
+                highest_rating_tags = highest_rating_val_tag.find_all_next("span")
+                if highest_rating_tags:
+                    highest_rating = int(highest_rating_tags[0].text)
 
         return highest_rating
 
-    def _search_rated_matches(self, soup: BeautifulSoup) -> int:
-        rated_matches_title = soup.find(string=re.compile("Rated Matches")).parent
-        rated_matches = int(rated_matches_title.next_sibling.string)
+    def _search_rated_matches(self, soup: BeautifulSoup) -> int | None:
+        rated_matches = 0
+        rated_matches_label = soup.find(string="Rated Matches")
+        if rated_matches_label:
+            rated_matches_label_tag = rated_matches_label.parent
+            if rated_matches_label_tag:
+                rated_matches_val_tag = rated_matches_label_tag.next_sibling
+                if rated_matches_val_tag:
+                    rated_matches = int(rated_matches_val_tag.text)
 
         return rated_matches
 
-    def _search_last_competed(self, soup: BeautifulSoup) -> datetime:
-        last_competed_title = soup.find(string="Last Competed").parent
-        last_competed_value = last_competed_title.next_sibling.string
-        last_competed = datetime.strptime(last_competed_value, "%Y/%m/%d")
+    def _search_last_competed(self, soup: BeautifulSoup) -> datetime | None:
+        last_competed = None
+        last_competed_label_tag = soup.find("th", string="Last Competed")
+        if last_competed_label_tag:
+            last_competed_val_tag = last_competed_label_tag.next_sibling
+            if last_competed_val_tag:
+                last_competed = datetime.strptime(last_competed_val_tag.text, "%Y/%m/%d")
 
         return last_competed
