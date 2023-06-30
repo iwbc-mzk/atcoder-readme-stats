@@ -14,6 +14,6 @@ class UserData(BaseModel):
 
 
 class StatsOption(BaseModel):
-    width: Optional[int] = 400
-    height: Optional[int] = 200
-    hide: Optional[set[str]] = {"id"}
+    width: int = 400
+    height: int = 200
+    hide: set[str] = {"id"}
