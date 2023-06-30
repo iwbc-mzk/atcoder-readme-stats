@@ -49,34 +49,82 @@ class StatsCard:
 
     def _renderRatingCircle(self, rating: int) -> str:
         color = get_rating_color(rating)
+        deg = 360 * (rating % 400) // 400
+
+        # 暫定対応
+        # できれば@propertyやanimationを使いたい
+        keyframes = []
+        N = 30
+        for i in range(N + 1):
+            prop = f"""
+                {i * 100 // N}% {{
+                    background-image: radial-gradient(white 60%, transparent 61%),
+                    conic-gradient({color} {i * deg/N}deg, {color}33 {i * deg/N}deg 360deg);
+                }}
+            """
+            keyframes.append(prop)
+
         style = f"""
-            .circle {{
-                width: 80px;
-                height: 80px;
-                border-radius: 50%;
-                border: 6px solid {color};
+            /*
+            これを使ってランクサークルのアニメーションができそうだが上手くいかない
+            @property --deg {{
+                syntax: "&lt;angle&gt;"
+                inherites: false;
+                initial-value: 0deg
+            }}
+            @keyframes conic-gradient {{
+                0% {{
+                    --deg: 0deg;
+                }}
+                100% {{
+                    --deg: {deg}deg;
+                }}
+            }}
+            */
+            
+            .container {{
+                width: 90px;
+                height: 90px;
                 text-align: center;
                 display: flex;
                 justify-content: center;
                 align-items: center;
+            }}
+            .circle {{
+            --deg: 0deg;
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+                background-image: radial-gradient(white 60%, transparent 61%), conic-gradient({color} var(--deg), {color}33 var(--deg) 360deg);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                animation-name: conic-gradient;
+                animation-duration: 0.8s;
+                animation-fill-mode: forwards;
             }}
             .rating {{
                 font-size: 24px;
                 font-weight: 800;
                 color: #434d58;
             }}
+
+            @keyframes conic-gradient {{
+                {"".join(keyframes)}
+            }}
         """
         return f"""
-            <div class="circle fadein">
-                <div>
-                    <span class="rating">{rating}</span>
+            <div class="container fadein">
+                <div class="circle">
+                    <div>
+                        <span class="rating">{rating}</span>
+                    </div>
                 </div>
             </div>
             <style>{style}</style>
         """
 
     def render(self):
-        print(*UserData.__fields__.keys())
         style = f"""
             #svg-body {{
                 margin: 0;
