@@ -81,6 +81,8 @@ class Atcoder:
         if last_competed_label_tag:
             last_competed_val_tag = last_competed_label_tag.next_sibling
             if last_competed_val_tag:
-                last_competed = datetime.strptime(last_competed_val_tag.text, "%Y/%m/%d")
+                last_competed = datetime.strptime(
+                    last_competed_val_tag.text, "%Y/%m/%d"
+                )
 
         return last_competed
