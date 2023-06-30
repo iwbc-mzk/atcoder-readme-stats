@@ -1,6 +1,7 @@
 from typing import Any
 
 from src.model import UserData, StatsOption
+from src.utils import get_rating_color
 
 
 class StatsCard:
@@ -46,6 +47,34 @@ class StatsCard:
 
         return f"<table>{''.join(stats)}</table>"
 
+    def _renderRatingCircle(self, rating: int) -> str:
+        color = get_rating_color(rating)
+        style = f"""
+            .circle {{
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                border: 6px solid {color};
+                text-align: center;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }}
+            .rating {{
+                font-size: 24px;
+                font-weight: 800;
+                color: #434d58;
+            }}
+        """
+        return f"""
+            <div class="circle fadein">
+                <div>
+                    <span class="rating">{rating}</span>
+                </div>
+            </div>
+            <style>{style}</style>
+        """
+
     def render(self):
         print(*UserData.__fields__.keys())
         style = f"""
@@ -79,6 +108,19 @@ class StatsCard:
                 font-size: 20px;
                 margin-bottom: 10px;
             }}
+            #stats-body {{
+                display: flex;
+                flex-direction: row;
+            }}
+            #stats {{
+                width: 60%;
+            }}
+            #rank-circle {{
+                width: 40%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }}
             tr {{
                 height: 22px;
             }}
@@ -111,9 +153,16 @@ class StatsCard:
                         <div id="card">
                             <div id="card-body">
                                 <div id="title" class="fadein">{self._userdata.id}'s Atcoder Stats</div>
-                                <table>
-                                    {self._renderStats()}
-                                </table>
+                                <div id="stats-body">
+                                    <div id="stats">
+                                        <table>
+                                            {self._renderStats()}
+                                        </table>
+                                    </div>
+                                    <div id="rank-circle">
+                                        {self._renderRatingCircle(self._userdata.rating)}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <style>{style}</style>
