@@ -14,18 +14,23 @@ class Atcoder:
     def __init__(self, username: str) -> None:
         self._username = username
         self._user_url = urljoin(self.base_url, username)
-        self._userdata = UserData(id=self._username)
+        self._userdata = None
 
     def fetch_data(self) -> UserData:
-        res = requests.get(self._user_url)
-        if res.ok:
-            user_soup = BeautifulSoup(res.content, "html.parser")
+        if not self._userdata:
+            self._userdata = UserData(id=self._username)
 
-            self._userdata.rank = self._search_rank(user_soup)
-            self._userdata.rating = self._search_rating(user_soup)
-            self._userdata.highest_rating = self._search_highest_rating(user_soup)
-            self._userdata.rated_matches = self._search_rated_matches(user_soup)
-            self._userdata.last_competed = self._search_last_competed(user_soup)
+            res = requests.get(self._user_url)
+            if res.ok:
+                user_soup = BeautifulSoup(res.content, "html.parser")
+
+                self._userdata.rank = self._search_rank(user_soup)
+                self._userdata.rating = self._search_rating(user_soup)
+                self._userdata.highest_rating = self._search_highest_rating(user_soup)
+                self._userdata.rated_matches = self._search_rated_matches(user_soup)
+                self._userdata.last_competed = self._search_last_competed(user_soup)
+            else:
+                raise ValueError("User Name Not Found.")
 
         return self._userdata
 

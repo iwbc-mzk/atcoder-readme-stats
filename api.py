@@ -19,7 +19,7 @@ async def stats(
     width: Optional[int] = None,
     height: Optional[int] = None,
     hide: Optional[str] = None,  # ex: hide=rating,last_competed
-    theme: Optional[str] = "default"
+    theme: Optional[str] = "default",
 ):
     ac = Atcoder(username)
 
@@ -33,7 +33,12 @@ async def stats(
     if theme:
         option.theme = THEMES[theme] if theme in THEMES else THEMES["default"]
 
-    card = StatsCard(ac.fetch_data(), option)
+    try:
+        userdata = ac.fetch_data()
+    except ValueError as e:
+        return Response(content=e.args[0], status_code=404)
+
+    card = StatsCard(userdata, option)
     svg = io.BytesIO(bytes(card.render(), "utf-8")).getvalue()
 
     return Response(content=svg, media_type="image/svg+xml")
