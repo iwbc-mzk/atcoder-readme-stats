@@ -5,7 +5,7 @@ from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 import requests
 
-from src.model import UserData
+from .model import UserData
 
 
 class Atcoder:

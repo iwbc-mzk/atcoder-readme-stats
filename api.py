@@ -4,9 +4,8 @@ import io
 from fastapi import FastAPI
 from fastapi.responses import Response
 
-from src.stats import StatsCard
-from src.atcoder import Atcoder
-from src.model import StatsOption
+from src import StatsCard, Atcoder, StatsOption
+
 
 app = FastAPI()
 
