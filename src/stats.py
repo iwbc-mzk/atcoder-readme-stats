@@ -12,6 +12,13 @@ class StatsItem(BaseModel):
     value: Any
 
 
+class StatsOption(BaseModel):
+    width: int = 400
+    height: int = 200
+    hide: set[str] = set()
+    theme: Theme = THEMES["default"]
+
+
 class StatsCard:
     def __init__(self, userdata: UserData, option: StatsOption = StatsOption()) -> None:
         self._userdata = userdata
