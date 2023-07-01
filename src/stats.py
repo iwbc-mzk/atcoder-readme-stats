@@ -14,7 +14,7 @@ class StatsItem(BaseModel):
 
 
 class StatsOption(BaseModel):
-    width: int = 400
+    width: int = 450
     height: int = 200
     hide: set[str] = set()
     theme: Theme = THEMES["default"]
