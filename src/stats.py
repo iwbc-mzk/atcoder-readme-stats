@@ -44,7 +44,6 @@ class StatsCard:
 
     def _renderStats(self) -> str:
         hide = {"id", "rating"} | self._option.hide
-        print(hide)
         stats = [item for item in self._statsitems() if item.key not in hide]
 
         stats_rows = [
@@ -62,8 +61,8 @@ class StatsCard:
             }}
             .stats-cell {{
                 color: #434d58;
-                font-size: 15px;
-                font-weight: 600;
+                font-size: 16px;
+                font-weight: 700;
             }}
             .stats-cell:nth-child(2) {{
                 text-align: right;
@@ -133,10 +132,16 @@ class StatsCard:
                 animation-duration: 0.8s;
                 animation-fill-mode: forwards;
             }}
+            .rating-label {{
+                font-size: 16px;
+                font-weight: 600;
+                color: {color};
+
+            }}
             .rating {{
                 font-size: 24px;
                 font-weight: 800;
-                color: #434d58;
+                color: {color};
             }}
 
             @keyframes conic-gradient {{
@@ -160,6 +165,7 @@ class StatsCard:
         style = f"""
             #svg-body {{
                 margin: 0;
+                font-family: "Segoe UI", Ubuntu, Sans-Serif;
             }}
             #card {{
                 width: {self._option.width}px;
@@ -184,8 +190,9 @@ class StatsCard:
                 height: calc(100% - 40px);
             }}
             #title {{
-                color: #54AEFF;
+                color: #2f80ed;
                 font-size: 20px;
+                font-weight: 600;
                 margin-bottom: 10px;
             }}
             #stats-body {{
