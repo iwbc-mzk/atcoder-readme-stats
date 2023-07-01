@@ -113,8 +113,8 @@ class StatsCard:
             */
             
             .container {{
-                width: 90px;
-                height: 90px;
+                width: 95px;
+                height: 95px;
                 text-align: center;
                 display: flex;
                 justify-content: center;
@@ -124,7 +124,7 @@ class StatsCard:
                 width: 100%;
                 height: 100%;
                 border-radius: 50%;
-                background-image: radial-gradient(white 60%, transparent 61%), conic-gradient({color} var(--deg), {color}33 var(--deg) 360deg);
+                background-image: radial-gradient(white 58%, transparent 59%), conic-gradient({color} var(--deg), {color}33 var(--deg) 360deg);
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -146,6 +146,8 @@ class StatsCard:
             <div class="container fadein">
                 <div class="circle">
                     <div>
+                        <span>Rate</span>
+                        <br />
                         <span class="rating">{rating}</span>
                     </div>
                 </div>
