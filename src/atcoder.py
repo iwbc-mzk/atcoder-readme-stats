@@ -65,7 +65,7 @@ class Atcoder:
 
     def _search_rated_matches(self, soup: BeautifulSoup) -> int | None:
         rated_matches = 0
-        rated_matches_label = soup.find(string="Rated Matches")
+        rated_matches_label = soup.find(string=re.compile("Rated Matches"))
         if rated_matches_label:
             rated_matches_label_tag = rated_matches_label.parent
             if rated_matches_label_tag:
