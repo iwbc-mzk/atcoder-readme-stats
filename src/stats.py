@@ -147,7 +147,7 @@ class StatsCard:
             <div class="container fadein">
                 <div class="circle">
                     <div>
-                        <span>Rate</span>
+                        <span class="rating-label">Rating</span>
                         <br />
                         <span class="rating">{rating}</span>
                     </div>
