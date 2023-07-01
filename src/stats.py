@@ -68,7 +68,7 @@ class StatsCard:
                 height: 28px;
             }}
             .stats-cell {{
-                color: #434d58;
+                color: {self._option.theme.text_color};
                 font-size: 16px;
                 font-weight: 700;
             }}
@@ -173,32 +173,30 @@ class StatsCard:
         style = f"""
             #svg-body {{
                 margin: 0;
-                font-family: "Segoe UI", Ubuntu, Sans-Serif;
+                font-family: {self._option.theme.font_family};
+                height: 100%;
+                width: 100%;
             }}
             #card {{
-                width: {self._option.width}px;
-                height: {self._option.height}px;
+                width: calc(100% - 2px);
+                height: calc(100% - 2px);
                 
                 display: flex;
                 position: relative;
-            }}
-            #card::after {{
-                content: "";
+                background-color: {self._option.theme.background_color};
+
                 border: 1px solid rgb(228, 226, 226);
                 border-radius: 10px;
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: calc(100% - 2px);
-                height: calc(100% - 2px);
             }}
             #card-body {{
                 margin: auto;
                 width: calc(100% - 40px);
                 height: calc(100% - 40px);
+                display: flex;
+                flex-direction: column;
             }}
             #title {{
-                color: #2f80ed;
+                color: {self._option.theme.title_color};
                 font-size: 20px;
                 font-weight: 600;
                 margin-bottom: 10px;
@@ -233,7 +231,7 @@ class StatsCard:
             }}
         """
         return f"""
-            <svg version="1.1" width="{self._option.width}" height="{self._option.height}" viewBox="0 0 {self._option.width+5} {self._option.height+5}" xmlns="http://www.w3.org/2000/svg">
+            <svg version="1.1" width="{self._option.width}" height="{self._option.height}" viewBox="0 0 {self._option.width} {self._option.height}" xmlns="http://www.w3.org/2000/svg">
                 <foreignObject width="{self._option.width}" height="{self._option.height}" requiredExtensions="http://www.w3.org/1999/xhtml">
                     <body id="svg-body" xmlns="http://www.w3.org/1999/xhtml">
                         <div id="card">

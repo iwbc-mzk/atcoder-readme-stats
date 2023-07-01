@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from fastapi.responses import Response
 
 from src import StatsCard, Atcoder, StatsOption
+from src.themes import THEMES
 
 
 app = FastAPI()
@@ -18,6 +19,7 @@ async def stats(
     width: Optional[int] = None,
     height: Optional[int] = None,
     hide: Optional[str] = None,  # ex: hide=rating,last_competed
+    theme: Optional[str] = "default"
 ):
     ac = Atcoder(username)
 
@@ -28,6 +30,8 @@ async def stats(
         option.height = height
     if hide:
         option.hide = set(hide.split(","))
+    if theme:
+        option.theme = THEMES[theme] if theme in THEMES else THEMES["default"]
 
     card = StatsCard(ac.fetch_data(), option)
     svg = io.BytesIO(bytes(card.render(), "utf-8")).getvalue()
