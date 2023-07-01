@@ -1,7 +1,15 @@
 from typing import Any
 
+from pydantic import BaseModel
+
 from src.model import UserData, StatsOption
 from src.utils import get_rating_color
+
+
+class StatsItem(BaseModel):
+    key: str
+    label: str
+    value: Any
 
 
 class StatsCard:
@@ -21,7 +29,7 @@ class StatsCard:
 
         return key_label_map[field]
 
-    def _statsitems(self) -> list[tuple[str, Any]]:
+    def _statsitems(self) -> list[StatsItem]:
         statsItems = []
         for key, val in self._userdata.dict().items():
             if key in self._option.hide:
@@ -30,23 +38,27 @@ class StatsCard:
             label = self._field_to_label(key)
             if key == "last_competed":
                 val = val.strftime("%Y/%m/%d")
-            statsItems.append((label, val))
+            statsItems.append(StatsItem(key=key, label=label, value=val))
 
         return statsItems
 
     def _renderStats(self) -> str:
+        hide = {"id", "rating"} | self._option.hide
+        print(hide)
+        stats = [item for item in self._statsitems() if item.key not in hide]
+
         stats_rows = [
             f"""
                  <tr class="fadein stats-row" style="animation-delay: {(i + 3) * 150}ms">
-                    <td class="stats-cell">{label}:</td>
-                    <td class="stats-cell">{val}</td>
+                    <td class="stats-cell">{stat.label}:</td>
+                    <td class="stats-cell">{stat.value}</td>
                 </tr>
                 """
-            for i, (label, val) in enumerate(self._statsitems())
+            for i, stat in enumerate(stats)
         ]
         style = f"""
             .stats-row {{
-                height: 22px;
+                height: 28px;
             }}
             .stats-cell {{
                 color: #434d58;

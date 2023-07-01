@@ -13,14 +13,23 @@ app = FastAPI()
 
 @app.get("/stats/{username}")
 async def stats(
-    username: str, width: Optional[int] = None, height: Optional[int] = None
+    # path parameter
+    username: str,
+    # query parameter
+    width: Optional[int] = None,
+    height: Optional[int] = None,
+    hide: Optional[str] = None,  # ex: hide=rating,last_competed
 ):
     ac = Atcoder(username)
+
     option = StatsOption()
     if width:
         option.width = width
     if height:
         option.height = height
+    if hide:
+        option.hide = set(hide.split(","))
+
     card = StatsCard(ac.fetch_data(), option)
     svg = io.BytesIO(bytes(card.render(), "utf-8")).getvalue()
 
