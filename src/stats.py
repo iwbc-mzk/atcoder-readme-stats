@@ -35,17 +35,35 @@ class StatsCard:
         return statsItems
 
     def _renderStats(self) -> str:
-        stats = [
+        stats_rows = [
             f"""
-                 <tr class="fadein" style="animation-delay: {(i + 3) * 150}ms">
-                    <td>{label}:</td>
-                    <td>{val}</td>
+                 <tr class="fadein stats-row" style="animation-delay: {(i + 3) * 150}ms">
+                    <td class="stats-cell">{label}:</td>
+                    <td class="stats-cell">{val}</td>
                 </tr>
                 """
             for i, (label, val) in enumerate(self._statsitems())
         ]
+        style = f"""
+            .stats-row {{
+                height: 22px;
+            }}
+            .stats-cell {{
+                color: #434d58;
+                font-size: 15px;
+                font-weight: 600;
+            }}
+            .stats-cell:nth-child(2) {{
+                text-align: right;
+            }}
+        """
 
-        return f"<table>{''.join(stats)}</table>"
+        return f"""
+            <table style="width: 100%">
+                {"".join(stats_rows)}
+            </table>
+            <style>{style}</style>
+        """
 
     def _renderRatingCircle(self, rating: int) -> str:
         color = get_rating_color(rating)
@@ -169,15 +187,6 @@ class StatsCard:
                 justify-content: center;
                 align-items: center;
             }}
-            tr {{
-                height: 22px;
-            }}
-            td {{
-                color: #434d58;
-                font-size: 14px;
-                font-weight: 600;
-            }}
-
             .fadein {{
                 opacity: 0;
                 animation-name: fadein;
@@ -203,9 +212,7 @@ class StatsCard:
                                 <div id="title" class="fadein">{self._userdata.id}'s Atcoder Stats</div>
                                 <div id="stats-body">
                                     <div id="stats">
-                                        <table>
-                                            {self._renderStats()}
-                                        </table>
+                                        {self._renderStats()}
                                     </div>
                                     <div id="rank-circle">
                                         {self._renderRatingCircle(self._userdata.rating)}
