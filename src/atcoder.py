@@ -1,11 +1,12 @@
 import re
 from datetime import datetime
 from urllib.parse import urljoin
+from typing import Optional
 
 from bs4 import BeautifulSoup
 import requests
 
-from .model import UserData
+from src.model import UserData
 
 
 class Atcoder:
@@ -34,7 +35,7 @@ class Atcoder:
 
         return self._userdata
 
-    def _search_rank(self, soup: BeautifulSoup) -> int | None:
+    def _search_rank(self, soup: BeautifulSoup) -> Optional[int]:
         rank = None
         rank_label_tag = soup.find("th", string="Rank")
         if rank_label_tag:
@@ -44,7 +45,7 @@ class Atcoder:
 
         return rank
 
-    def _search_rating(self, soup: BeautifulSoup) -> int | None:
+    def _search_rating(self, soup: BeautifulSoup) -> Optional[int]:
         rating = None
         rating_label_tag = soup.find("th", string="Rating")
         if rating_label_tag:
@@ -56,7 +57,7 @@ class Atcoder:
 
         return rating
 
-    def _search_highest_rating(self, soup: BeautifulSoup) -> int | None:
+    def _search_highest_rating(self, soup: BeautifulSoup) -> Optional[int]:
         highest_rating = None
         highest_rating_label_tag = soup.find("th", string="Highest Rating")
         if highest_rating_label_tag:
@@ -68,7 +69,7 @@ class Atcoder:
 
         return highest_rating
 
-    def _search_rated_matches(self, soup: BeautifulSoup) -> int | None:
+    def _search_rated_matches(self, soup: BeautifulSoup) -> Optional[int]:
         rated_matches = 0
         rated_matches_label = soup.find(string=re.compile("Rated Matches"))
         if rated_matches_label:
@@ -80,7 +81,7 @@ class Atcoder:
 
         return rated_matches
 
-    def _search_last_competed(self, soup: BeautifulSoup) -> datetime | None:
+    def _search_last_competed(self, soup: BeautifulSoup) -> Optional[datetime]:
         last_competed = None
         last_competed_label_tag = soup.find("th", string="Last Competed")
         if last_competed_label_tag:

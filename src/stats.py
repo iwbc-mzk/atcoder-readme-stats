@@ -2,9 +2,9 @@ from typing import Any
 
 from pydantic import BaseModel
 
-from .model import UserData
-from .utils import get_rating_color
-from .themes import Theme, THEMES
+from src.model import UserData
+from src.utils import get_rating_color
+from src.themes import Theme, THEMES
 
 
 class StatsItem(BaseModel):
