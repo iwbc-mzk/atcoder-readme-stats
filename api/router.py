@@ -4,7 +4,8 @@ import io
 from fastapi import FastAPI
 from fastapi.responses import Response
 
-from src import StatsCard, Atcoder, StatsOption
+from src.stats import StatsCard, StatsOption
+from src.atcoder import Atcoder
 from src.themes import THEMES
 
 
