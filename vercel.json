@@ -1,0 +1,14 @@
+{
+    "functions": {
+        "api/router.py": {
+            "memory": 1024,
+            "maxDuration": 10
+        }
+    },
+    "rewrites": [
+        {
+            "source": "/(.*)",
+            "destination": "api/router.py"
+        }
+    ]
+}
