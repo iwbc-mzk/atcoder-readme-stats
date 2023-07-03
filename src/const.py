@@ -1,0 +1,1 @@
+ONE_DAY_SECOND = 24 * 60 * 60

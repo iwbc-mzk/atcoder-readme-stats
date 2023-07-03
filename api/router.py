@@ -7,6 +7,7 @@ from fastapi.responses import Response
 from src.stats import StatsCard, StatsOption
 from src.atcoder import Atcoder
 from src.themes import THEMES
+from src.const import ONE_DAY_SECOND
 
 
 app = FastAPI()
@@ -42,4 +43,12 @@ async def stats(
     card = StatsCard(userdata, option)
     svg = io.BytesIO(bytes(card.render(), "utf-8")).getvalue()
 
-    return Response(content=svg, media_type="image/svg+xml")
+    headers = {
+        "Cache-Control": f"""
+            max-age={ONE_DAY_SECOND // 2},
+            stale-while-revalidate={ONE_DAY_SECOND},
+            s-maxage={ONE_DAY_SECOND}
+        """,
+    }
+
+    return Response(content=svg, headers=headers, media_type="image/svg+xml")
