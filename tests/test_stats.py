@@ -158,11 +158,7 @@ class TestStatsCard:
         assert not soup.find(id="last_competed-label")
         assert not soup.find(id="last_competed-value")
 
-    @pytest.mark.parametrize("width", [
-        100,
-        400,
-        1000
-    ])
+    @pytest.mark.parametrize("width", [100, 400, 1000])
     def test_width_option(self, width):
         option = StatsOption()
         option.width = width
@@ -171,11 +167,7 @@ class TestStatsCard:
         svg = soup.find("svg")
         assert int(svg.attrs["width"]) == width
 
-    @pytest.mark.parametrize("height", [
-        100,
-        400,
-        1000
-    ])
+    @pytest.mark.parametrize("height", [100, 400, 1000])
     def test_height_option(self, height):
         option = StatsOption()
         option.height = height
@@ -183,3 +175,41 @@ class TestStatsCard:
         soup = BeautifulSoup(stats_card.render(), "html.parser")
         svg = soup.find("svg")
         assert int(svg.attrs["height"]) == height
+
+    def test_theme_option(self):
+        option = StatsOption()
+
+        theme = THEMES["darcula"]
+        option.theme = theme
+        stats_card = StatsCard(userdata=self.userdata, option=option)
+        soup = BeautifulSoup(stats_card.render(), "html.parser")
+
+        main_styles = serialize_css(soup.find("style", id="main-style").string)
+
+        # Font Family
+        font_falmily = self._get_property_from_css(
+            main_styles, "#svg-body", "font-family"
+        )
+        assert font_falmily
+        assert font_falmily == theme.font_family
+
+        # Background Color
+        background_color = self._get_property_from_css(
+            main_styles, "#card", "background-color"
+        )
+        assert background_color
+        assert background_color == theme.background_color
+
+        # Title Color
+        title_color = self._get_property_from_css(main_styles, "#title", "color")
+        assert title_color
+        assert title_color == theme.title_color
+
+        # Text Color
+        text_color = self._get_property_from_css(main_styles, "#svg-body", "color")
+        assert text_color
+        assert text_color == theme.text_color
+
+        circle_styles = serialize_css(
+            soup.find("style", id="rating-circle-style").string
+        )
