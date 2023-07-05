@@ -132,3 +132,28 @@ class TestStatsCard:
         assert f"radial-gradient({default_theme.background_color}" in css_text
         assert f"conic-gradient({rating_color}" in css_text
 
+    def test_hide_stats(self):
+        option = StatsOption()
+        option.hide = {"rank", "highest_rating", "rated_matches", "last_competed"}
+        stats_card = StatsCard(userdata=self.userdata, option=option)
+        soup = BeautifulSoup(stats_card.render(), "html.parser")
+
+        # ID
+        assert not soup.find(id="id-label")
+        assert not soup.find(id="id-value")
+        # Rating
+        assert not soup.find(id="rating-label")
+        assert not soup.find(id="rating-value")
+        # Rank
+        assert not soup.find(id="rank-label")
+        assert not soup.find(id="rank-value")
+        # Highenst Rating
+        assert not soup.find(id="highest_rating-label")
+        assert not soup.find(id="highest_rating-value")
+        # Rated Matches
+        assert not soup.find(id="rated_matches-label")
+        assert not soup.find(id="rated_matches-value")
+        # Last Competed
+        assert not soup.find(id="last_competed-label")
+        assert not soup.find(id="last_competed-value")
+
