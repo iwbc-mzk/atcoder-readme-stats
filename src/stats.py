@@ -40,7 +40,7 @@ class StatsCard:
     def _statsitems(self) -> list[StatsItem]:
         statsItems = []
         for key, val in self._userdata.dict().items():
-            if key in self._option.hide:
+            if key in {"id", "rating"} | self._option.hide:
                 continue
 
             label = self._field_to_label(key)
@@ -51,8 +51,7 @@ class StatsCard:
         return statsItems
 
     def _renderStats(self) -> str:
-        hide = {"id", "rating"} | self._option.hide
-        stats = [item for item in self._statsitems() if item.key not in hide]
+        stats = self._statsitems()
 
         stats_rows = [
             f"""
