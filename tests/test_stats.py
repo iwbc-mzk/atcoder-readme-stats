@@ -48,7 +48,7 @@ class TestStatsCard:
         svg = soup.find("svg")
 
         # default width is 450 px
-        assert int(svg.attrs["width"]) == 4501
+        assert int(svg.attrs["width"]) == 450
         # default height is 200 px
         assert int(svg.attrs["height"]) == 200
         # default viewbox fit width and height
@@ -57,6 +57,12 @@ class TestStatsCard:
         # Title
         assert soup.find(id="title").string == f"{self.userdata.id}'s Atcoder Stats"
 
+        # ID
+        assert not soup.find(id="id-label")
+        assert not soup.find(id="id-value")
+        # Rating
+        assert not soup.find(id="rating-label")
+        assert not soup.find(id="rating-value")
         # Rank
         assert soup.find(id="rank-label").string == "Rank:"
         assert int(soup.find(id="rank-value").string) == self.userdata.rank
