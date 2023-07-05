@@ -31,7 +31,7 @@ addopts = [
     "--tb=short",
     "-vl",
     "-rsxX",
-    "--cov=src",
+    # "--cov=src",
     # "--cov-report=html"
 ]
 testpaths = "tests"
