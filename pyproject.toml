@@ -25,3 +25,13 @@ pytest-cov = "^4.1.0"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+addopts = [
+    "--tb=short",
+    "-vl",
+    "-rsxX",
+    "--cov=src",
+    # "--cov-report=html"
+]
+testpaths = "tests"
