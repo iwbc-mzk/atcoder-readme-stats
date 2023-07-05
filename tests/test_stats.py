@@ -3,6 +3,7 @@ import cssutils
 from cssutils.css import CSSStyleSheet
 
 from bs4 import BeautifulSoup
+import pytest
 
 from src.stats import StatsCard, StatsOption
 from src.model import UserData
@@ -157,3 +158,28 @@ class TestStatsCard:
         assert not soup.find(id="last_competed-label")
         assert not soup.find(id="last_competed-value")
 
+    @pytest.mark.parametrize("width", [
+        100,
+        400,
+        1000
+    ])
+    def test_width_option(self, width):
+        option = StatsOption()
+        option.width = width
+        stats_card = StatsCard(userdata=self.userdata, option=option)
+        soup = BeautifulSoup(stats_card.render(), "html.parser")
+        svg = soup.find("svg")
+        assert int(svg.attrs["width"]) == width
+
+    @pytest.mark.parametrize("height", [
+        100,
+        400,
+        1000
+    ])
+    def test_height_option(self, height):
+        option = StatsOption()
+        option.height = height
+        stats_card = StatsCard(userdata=self.userdata, option=option)
+        soup = BeautifulSoup(stats_card.render(), "html.parser")
+        svg = soup.find("svg")
+        assert int(svg.attrs["height"]) == height
