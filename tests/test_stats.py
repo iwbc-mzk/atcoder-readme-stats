@@ -125,3 +125,4 @@ class TestStatsCard:
         assert css_text
         assert f"radial-gradient({default_theme.background_color}" in css_text
         assert f"conic-gradient({rating_color}" in css_text
+
