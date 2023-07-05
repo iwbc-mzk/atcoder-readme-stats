@@ -50,6 +50,8 @@ class TestStatsCard:
         assert int(svg.attrs["width"]) == 450
         # default height is 200 px
         assert int(svg.attrs["height"]) == 200
+        # default viewbox fit width and height
+        assert svg.attrs["viewbox"] == "0 0 450 200"
 
         # Title
         assert soup.find(id="title").string == f"{self.userdata.id}'s Atcoder Stats"
