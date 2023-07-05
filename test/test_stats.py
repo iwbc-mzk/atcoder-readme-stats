@@ -9,6 +9,7 @@ from src.model import UserData
 from src.themes import THEMES
 from src.utils import get_rating_color
 
+
 def serialize_css(css: str) -> CSSStyleSheet:
     css = css.replace("\n", "")
     c = []
@@ -85,12 +86,16 @@ class TestStatsCard:
         main_styles = serialize_css(soup.find("style", id="main-style").string)
 
         # Font Family
-        font_falmily = self._get_property_from_css(main_styles, "#svg-body", "font-family")
+        font_falmily = self._get_property_from_css(
+            main_styles, "#svg-body", "font-family"
+        )
         assert font_falmily
         assert font_falmily == default_theme.font_family
 
         # Background Color
-        background_color = self._get_property_from_css(main_styles, "#card", "background-color")
+        background_color = self._get_property_from_css(
+            main_styles, "#card", "background-color"
+        )
         assert background_color
         assert background_color == default_theme.background_color
 
@@ -104,7 +109,9 @@ class TestStatsCard:
         assert text_color
         assert text_color == default_theme.text_color
 
-        circle_styles = serialize_css(soup.find("style", id="rating-circle-style").string)
+        circle_styles = serialize_css(
+            soup.find("style", id="rating-circle-style").string
+        )
 
         # Rating Color
         rating_color = self._get_property_from_css(circle_styles, ".rating", "color")
@@ -118,4 +125,3 @@ class TestStatsCard:
         assert css_text
         assert f"radial-gradient({default_theme.background_color}" in css_text
         assert f"conic-gradient({rating_color}" in css_text
-        
