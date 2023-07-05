@@ -56,8 +56,8 @@ class StatsCard:
         stats_rows = [
             f"""
                  <tr class="fadein stats-row" style="animation-delay: {(i + 3) * 150}ms">
-                    <td class="stats-cell">{stat.label}:</td>
-                    <td class="stats-cell">{stat.value}</td>
+                    <td class="stats-cell" id="{stat.key}-label">{stat.label}:</td>
+                    <td class="stats-cell" id="{stat.key}-value">{stat.value}</td>
                 </tr>
                 """
             for i, stat in enumerate(stats)
@@ -67,7 +67,6 @@ class StatsCard:
                 height: 28px;
             }}
             .stats-cell {{
-                color: {self._option.theme.text_color};
                 font-size: 16px;
                 font-weight: 700;
             }}
@@ -80,7 +79,7 @@ class StatsCard:
             <table style="width: 100%">
                 {"".join(stats_rows)}
             </table>
-            <style>{style}</style>
+            <style id="stats-style">{style}</style>
         """
 
     def _renderRatingCircle(self, rating: int) -> str:
@@ -94,7 +93,7 @@ class StatsCard:
         for i in range(N + 1):
             prop = f"""
                 {i * 100 // N}% {{
-                    background-image: radial-gradient(white 60%, transparent 61%),
+                    background-image: radial-gradient({self._option.theme.background_color} 60%, transparent 61%),
                     conic-gradient({color} {i * deg/N}deg, {color}33 {i * deg/N}deg 360deg);
                 }}
             """
@@ -131,7 +130,6 @@ class StatsCard:
                 width: 100%;
                 height: 100%;
                 border-radius: 50%;
-                background-image: radial-gradient(white 58%, transparent 59%), conic-gradient({color} var(--deg), {color}33 var(--deg) 360deg);
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -139,16 +137,16 @@ class StatsCard:
                 animation-duration: 0.8s;
                 animation-fill-mode: forwards;
             }}
+            .rating {{
+                color: {color};
+            }}
             .rating-label {{
                 font-size: 16px;
                 font-weight: 600;
-                color: {color};
-
             }}
-            .rating {{
+            .rating-text {{
                 font-size: 24px;
                 font-weight: 800;
-                color: {color};
             }}
 
             @keyframes conic-gradient {{
@@ -158,14 +156,14 @@ class StatsCard:
         return f"""
             <div class="container fadein">
                 <div class="circle">
-                    <div>
+                    <div class="rating">
                         <span class="rating-label">Rating</span>
                         <br />
-                        <span class="rating">{rating}</span>
+                        <span class="rating-text">{rating}</span>
                     </div>
                 </div>
             </div>
-            <style>{style}</style>
+            <style id="rating-circle-style">{style}</style>
         """
 
     def render(self):
@@ -175,6 +173,7 @@ class StatsCard:
                 font-family: {self._option.theme.font_family};
                 height: 100%;
                 width: 100%;
+                color: {self._option.theme.text_color};
             }}
             #card {{
                 width: calc(100% - 2px);
@@ -246,7 +245,7 @@ class StatsCard:
                                 </div>
                             </div>
                         </div>
-                        <style>{style}</style>
+                        <style id="main-style">{style}</style>
                     </body>
                 </foreignObject>
             </svg>
