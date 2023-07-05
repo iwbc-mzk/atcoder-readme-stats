@@ -21,7 +21,7 @@ class Atcoder:
         if not self._userdata:
             self._userdata = UserData(id=self._username)
 
-            res = requests.get(self._user_url)
+            res = self._request(self._user_url)
             if res.ok:
                 user_soup = BeautifulSoup(res.content, "html.parser")
 
@@ -34,6 +34,9 @@ class Atcoder:
                 raise ValueError("User Name Not Found.")
 
         return self._userdata
+
+    def _request(self, url: str) -> requests.Response:
+        return requests.get(url)
 
     def _search_rank(self, soup: BeautifulSoup) -> Optional[int]:
         rank = None
