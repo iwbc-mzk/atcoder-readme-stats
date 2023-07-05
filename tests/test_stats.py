@@ -48,7 +48,7 @@ class TestStatsCard:
         svg = soup.find("svg")
 
         # default width is 450 px
-        assert int(svg.attrs["width"]) == 450
+        assert int(svg.attrs["width"]) == 4501
         # default height is 200 px
         assert int(svg.attrs["height"]) == 200
         # default viewbox fit width and height
@@ -125,3 +125,4 @@ class TestStatsCard:
         assert css_text
         assert f"radial-gradient({default_theme.background_color}" in css_text
         assert f"conic-gradient({rating_color}" in css_text
+
