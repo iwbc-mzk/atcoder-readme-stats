@@ -1,4 +1,4 @@
-from typing import Optional, Union, TypeAlias, Literal
+from typing import Optional, Union, Literal
 import io
 
 from fastapi import FastAPI
@@ -9,7 +9,7 @@ from src.atcoder import Atcoder
 from src.themes import THEMES
 from src.const import ONE_DAY_SECOND
 
-Auto: TypeAlias = Literal["auto"]
+Auto = Literal["auto"]
 
 
 app = FastAPI()
