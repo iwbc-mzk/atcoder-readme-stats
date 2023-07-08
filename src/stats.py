@@ -1,10 +1,12 @@
-from typing import Any
+from typing import Any, Union, Literal
 
 from pydantic import BaseModel
 
 from src.model import UserData
 from src.utils import get_rating_color
 from src.themes import Theme, THEMES
+
+Auto = Literal["auto"]
 
 
 class StatsItem(BaseModel):
@@ -14,8 +16,8 @@ class StatsItem(BaseModel):
 
 
 class StatsOption(BaseModel):
-    width: int = 450
-    height: int = 200
+    width: Union[int, Auto] = "auto"
+    height: Union[int, Auto] = "auto"
     hide: set[str] = set()
     theme: Theme = THEMES["default"]
 
@@ -167,13 +169,17 @@ class StatsCard:
         """
 
     def render(self):
+        width = self._option.width
+        height = self._option.height
+        theme = self._option.theme
+
         style = f"""
             #svg-body {{
                 margin: 0;
-                font-family: {self._option.theme.font_family};
+                font-family: {theme.font_family};
+                color: {theme.text_color};
                 height: 100%;
                 width: 100%;
-                color: {self._option.theme.text_color};
             }}
             #card {{
                 width: calc(100% - 2px);
@@ -181,7 +187,7 @@ class StatsCard:
                 
                 display: flex;
                 position: relative;
-                background-color: {self._option.theme.background_color};
+                background-color: {theme.background_color};
 
                 border: 1px solid rgb(228, 226, 226);
                 border-radius: 10px;
@@ -194,7 +200,7 @@ class StatsCard:
                 flex-direction: column;
             }}
             #title {{
-                color: {self._option.theme.title_color};
+                color: {theme.title_color};
                 font-size: 20px;
                 font-weight: 600;
                 margin-bottom: 10px;
@@ -229,8 +235,13 @@ class StatsCard:
             }}
         """
         return f"""
-            <svg version="1.1" width="{self._option.width}" height="{self._option.height}" viewBox="0 0 {self._option.width} {self._option.height}" xmlns="http://www.w3.org/2000/svg">
-                <foreignObject width="{self._option.width}" height="{self._option.height}" requiredExtensions="http://www.w3.org/1999/xhtml">
+            <svg version="1.1" 
+                viewBox="0 0 450 200"
+                xmlns="http://www.w3.org/2000/svg"
+                {f'width="{width}"' if type(width) == int else ""}
+                {f'height="{height}"' if type(height) == int else ""}
+            >
+                <foreignObject width="450" height="200" requiredExtensions="http://www.w3.org/1999/xhtml">
                     <body id="svg-body" xmlns="http://www.w3.org/1999/xhtml">
                         <div id="card">
                             <div id="card-body">

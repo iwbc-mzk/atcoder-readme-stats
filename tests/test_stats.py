@@ -48,11 +48,11 @@ class TestStatsCard:
 
         svg = soup.find("svg")
 
-        # default width is 450 px
-        assert int(svg.attrs["width"]) == 450
-        # default height is 200 px
-        assert int(svg.attrs["height"]) == 200
-        # default viewbox fit width and height
+        # default width is not set
+        assert "width" not in svg.attrs
+        # default height is not set
+        assert "width" not in svg.attrs
+        # viewbox width and height are 450 and 200
         assert svg.attrs["viewbox"] == "0 0 450 200"
 
         # Title
@@ -165,6 +165,8 @@ class TestStatsCard:
         stats_card = StatsCard(userdata=self.userdata, option=option)
         soup = BeautifulSoup(stats_card.render(), "html.parser")
         svg = soup.find("svg")
+
+        assert "width" in svg.attrs
         assert int(svg.attrs["width"]) == width
 
     @pytest.mark.parametrize("height", [100, 400, 1000])
@@ -174,6 +176,8 @@ class TestStatsCard:
         stats_card = StatsCard(userdata=self.userdata, option=option)
         soup = BeautifulSoup(stats_card.render(), "html.parser")
         svg = soup.find("svg")
+
+        assert "height" in svg.attrs
         assert int(svg.attrs["height"]) == height
 
     def test_theme_option(self):
