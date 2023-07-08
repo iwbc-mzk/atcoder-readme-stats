@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union, TypeAlias, Literal
 import io
 
 from fastapi import FastAPI
@@ -9,6 +9,8 @@ from src.atcoder import Atcoder
 from src.themes import THEMES
 from src.const import ONE_DAY_SECOND
 
+Auto: TypeAlias = Literal["auto"]
+
 
 app = FastAPI()
 
@@ -18,10 +20,10 @@ async def stats(
     # path parameter
     username: str,
     # query parameter
-    width: Optional[int] = None,
-    height: Optional[int] = None,
+    width: Optional[Union[int, Auto]] = None,
+    height: Optional[Union[int, Auto]] = None,
     hide: Optional[str] = None,  # ex: hide=rating,last_competed
-    theme: Optional[str] = "default",
+    theme: Optional[str] = None,
 ):
     ac = Atcoder(username)
 
