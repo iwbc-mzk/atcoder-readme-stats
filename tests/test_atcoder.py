@@ -4,7 +4,7 @@ import datetime
 import pytest
 from requests import Response
 
-from src.atcoder import Atcoder
+from src.atcoder import Atcoder as atcoder
 
 
 class TestAtcoder:
@@ -17,9 +17,6 @@ class TestAtcoder:
         "last_competed": datetime.datetime(2023, 7, 2),
     }
 
-    def setup(self):
-        self.ac = Atcoder()
-
     def test_fetch_data_ok(self):
         with open("tests/atcoder.html", "r", encoding="utf-8") as f:
             content = "".join(f.readlines())
@@ -29,7 +26,7 @@ class TestAtcoder:
                 res.__setattr__("_content", content)
                 res.__setattr__("status_code", 200)
                 rget_mock.return_value = res
-                userdata = self.ac.fetch_userdata("iwbc_mzk")
+                userdata = atcoder.fetch_userdata("iwbc_mzk")
 
         userdata_dict = dict(userdata)
         for key in self._userdata:
@@ -43,7 +40,7 @@ class TestAtcoder:
             res.__setattr__("status_code", 404)
             rget_mock.return_value = res
             with pytest.raises(ValueError) as e:
-                self.ac.fetch_userdata("iwbc_mzk")
+                atcoder.fetch_userdata("iwbc_mzk")
             assert str(e.value) == "User Name Not Found."
 
     def test_fetch_profile_ok(self):
@@ -55,7 +52,7 @@ class TestAtcoder:
                 res.__setattr__("_content", content)
                 res.__setattr__("status_code", 200)
                 rget_mock.return_value = res
-                profile = self.ac.fetch_profile("iwbc_mzk")
+                profile = atcoder.fetch_profile("iwbc_mzk")
 
         profile = dict(profile)
         for key in self._userdata:
@@ -69,6 +66,6 @@ class TestAtcoder:
             res.__setattr__("status_code", 404)
             rget_mock.return_value = res
             with pytest.raises(ValueError) as e:
-                self.ac.fetch_profile("iwbc_mzk")
+                atcoder.fetch_profile("iwbc_mzk")
             assert str(e.value) == "User Name Not Found."
 
