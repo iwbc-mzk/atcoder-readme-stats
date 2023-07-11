@@ -22,29 +22,31 @@ class Profile(BaseModel):
 class Atcoder:
     base_url = "https://atcoder.jp/users/"
 
-    def fetch_userdata(self, username: str) -> UserData:
+    @classmethod
+    def fetch_userdata(cls, username: str) -> UserData:
         userdata = UserData(id=username)
 
-        profile = self.fetch_profile(username)
-        self._set_profile(userdata, profile)
+        profile = cls.fetch_profile(username)
+        cls._set_profile(userdata, profile)
 
         return userdata
 
-    def fetch_profile(self, username: str) -> Profile:
-        url = self._get_profile_url(username)
+    @classmethod
+    def fetch_profile(cls, username: str) -> Profile:
+        url = cls._get_profile_url(username)
         profile = Profile(id=username)
 
-        res = self._request(url)
+        res = cls._request(url)
         if res.ok:
             soup = BeautifulSoup(res.content, "html.parser")
             profile = Profile(
                 **{  # type: ignore
                     "id": username,
-                    "rank": self._search_rank(soup),
-                    "rating": self._search_rating(soup),
-                    "highest_rating": self._search_highest_rating(soup),
-                    "rated_matches": self._search_rated_matches(soup),
-                    "last_competed": self._search_last_competed(soup),
+                    "rank": cls._search_rank(soup),
+                    "rating": cls._search_rating(soup),
+                    "highest_rating": cls._search_highest_rating(soup),
+                    "rated_matches": cls._search_rated_matches(soup),
+                    "last_competed": cls._search_last_competed(soup),
                 }
             )
         else:
@@ -52,23 +54,28 @@ class Atcoder:
 
         return profile
 
-    def _set_profile(self, userdata: UserData, profile: Profile):
+    @classmethod
+    def _set_profile(cls, userdata: UserData, profile: Profile):
         userdata.rank = profile.rank
         userdata.rating = profile.rating
         userdata.highest_rating = profile.highest_rating
         userdata.rated_matches = profile.rated_matches
         userdata.last_competed = profile.last_competed
 
-    def _get_profile_url(self, username: str) -> str:
-        return urljoin(self.base_url, username)
+    @classmethod
+    def _get_profile_url(cls, username: str) -> str:
+        return urljoin(cls.base_url, username)
 
-    def _get_competition_history_url(self, username: str) -> str:
-        return urljoin(self.base_url, f"{username}/history")
+    @classmethod
+    def _get_competition_history_url(cls, username: str) -> str:
+        return urljoin(cls.base_url, f"{username}/history")
 
-    def _request(self, url: str) -> requests.Response:
+    @classmethod
+    def _request(cls, url: str) -> requests.Response:
         return requests.get(url)
 
-    def _search_rank(self, soup: BeautifulSoup) -> Optional[int]:
+    @classmethod
+    def _search_rank(cls, soup: BeautifulSoup) -> Optional[int]:
         rank = None
         rank_label_tag = soup.find("th", string="Rank")
         if rank_label_tag:
@@ -78,7 +85,8 @@ class Atcoder:
 
         return rank
 
-    def _search_rating(self, soup: BeautifulSoup) -> Optional[int]:
+    @classmethod
+    def _search_rating(cls, soup: BeautifulSoup) -> Optional[int]:
         rating = None
         rating_label_tag = soup.find("th", string="Rating")
         if rating_label_tag:
@@ -90,7 +98,8 @@ class Atcoder:
 
         return rating
 
-    def _search_highest_rating(self, soup: BeautifulSoup) -> Optional[int]:
+    @classmethod
+    def _search_highest_rating(cls, soup: BeautifulSoup) -> Optional[int]:
         highest_rating = None
         highest_rating_label_tag = soup.find("th", string="Highest Rating")
         if highest_rating_label_tag:
@@ -102,7 +111,8 @@ class Atcoder:
 
         return highest_rating
 
-    def _search_rated_matches(self, soup: BeautifulSoup) -> Optional[int]:
+    @classmethod
+    def _search_rated_matches(cls, soup: BeautifulSoup) -> Optional[int]:
         rated_matches = 0
         rated_matches_label = soup.find(string=re.compile("Rated Matches"))
         if rated_matches_label:
@@ -114,7 +124,8 @@ class Atcoder:
 
         return rated_matches
 
-    def _search_last_competed(self, soup: BeautifulSoup) -> Optional[datetime]:
+    @classmethod
+    def _search_last_competed(cls, soup: BeautifulSoup) -> Optional[datetime]:
         last_competed = None
         last_competed_label_tag = soup.find("th", string="Last Competed")
         if last_competed_label_tag:
