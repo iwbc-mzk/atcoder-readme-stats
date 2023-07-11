@@ -5,35 +5,65 @@ from typing import Optional
 
 from bs4 import BeautifulSoup
 import requests
+from pydantic import BaseModel
 
 from src.model import UserData
+
+
+class Profile(BaseModel):
+    id: str
+    rank: Optional[int] = None
+    rating: Optional[int] = None
+    highest_rating: Optional[int] = None
+    rated_matches: Optional[int] = None
+    last_competed: Optional[datetime] = None
 
 
 class Atcoder:
     base_url = "https://atcoder.jp/users/"
 
-    def __init__(self, username: str) -> None:
-        self._username = username
-        self._user_url = urljoin(self.base_url, username)
-        self._userdata = None
+    def fetch_userdata(self, username: str) -> UserData:
+        userdata = UserData(id=username)
 
-    def fetch_data(self) -> UserData:
-        if not self._userdata:
-            self._userdata = UserData(id=self._username)
+        profile = self.fetch_profile(username)
+        self._set_profile(userdata, profile)
 
-            res = self._request(self._user_url)
-            if res.ok:
-                user_soup = BeautifulSoup(res.content, "html.parser")
+        return userdata
 
-                self._userdata.rank = self._search_rank(user_soup)
-                self._userdata.rating = self._search_rating(user_soup)
-                self._userdata.highest_rating = self._search_highest_rating(user_soup)
-                self._userdata.rated_matches = self._search_rated_matches(user_soup)
-                self._userdata.last_competed = self._search_last_competed(user_soup)
-            else:
-                raise ValueError("User Name Not Found.")
+    def fetch_profile(self, username: str) -> Profile:
+        url = self._get_profile_url(username)
+        profile = Profile(id=username)
 
-        return self._userdata
+        res = self._request(url)
+        if res.ok:
+            soup = BeautifulSoup(res.content, "html.parser")
+            profile = Profile(
+                **{  # type: ignore
+                    "id": username,
+                    "rank": self._search_rank(soup),
+                    "rating": self._search_rating(soup),
+                    "highest_rating": self._search_highest_rating(soup),
+                    "rated_matches": self._search_rated_matches(soup),
+                    "last_competed": self._search_last_competed(soup),
+                }
+            )
+        else:
+            raise ValueError("User Name Not Found.")
+
+        return profile
+
+    def _set_profile(self, userdata: UserData, profile: Profile):
+        userdata.rank = profile.rank
+        userdata.rating = profile.rating
+        userdata.highest_rating = profile.highest_rating
+        userdata.rated_matches = profile.rated_matches
+        userdata.last_competed = profile.last_competed
+
+    def _get_profile_url(self, username: str) -> str:
+        return urljoin(self.base_url, username)
+
+    def _get_competition_history_url(self, username: str) -> str:
+        return urljoin(self.base_url, f"{username}/history")
 
     def _request(self, url: str) -> requests.Response:
         return requests.get(url)

@@ -25,7 +25,7 @@ async def stats(
     hide: Optional[str] = None,  # ex: hide=rating,last_competed
     theme: Optional[str] = None,
 ):
-    ac = Atcoder(username)
+    ac = Atcoder()
 
     option = StatsOption()
     if width:
@@ -38,7 +38,7 @@ async def stats(
         option.theme = THEMES[theme] if theme in THEMES else THEMES["default"]
 
     try:
-        userdata = ac.fetch_data()
+        userdata = ac.fetch_userdata(username)
     except ValueError as e:
         return Response(content=e.args[0], status_code=404)
 

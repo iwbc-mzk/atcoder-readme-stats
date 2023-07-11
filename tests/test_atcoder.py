@@ -17,9 +17,10 @@ class TestAtcoder:
         "last_competed": datetime.datetime(2023, 7, 2),
     }
 
-    def test_fetch_data_ok(self):
-        ac = Atcoder("iwbc_mzk")
+    def setup(self):
+        self.ac = Atcoder()
 
+    def test_fetch_data_ok(self):
         with open("tests/atcoder.html", "r", encoding="utf-8") as f:
             content = "".join(f.readlines())
 
@@ -28,7 +29,7 @@ class TestAtcoder:
                 res.__setattr__("_content", content)
                 res.__setattr__("status_code", 200)
                 rget_mock.return_value = res
-                userdata = ac.fetch_data()
+                userdata = self.ac.fetch_userdata("iwbc_mzk")
 
         userdata_dict = dict(userdata)
         for key in self._userdata:
@@ -36,13 +37,38 @@ class TestAtcoder:
             assert userdata_dict[key] == self._userdata[key]
 
     def test_fetch_data_ng(self):
-        ac = Atcoder("iwbc_mzk")
-
         # Invalid user name
         with mock.patch("requests.get") as rget_mock:
             res = Response()
             res.__setattr__("status_code", 404)
             rget_mock.return_value = res
             with pytest.raises(ValueError) as e:
-                ac.fetch_data()
+                self.ac.fetch_userdata("iwbc_mzk")
             assert str(e.value) == "User Name Not Found."
+
+    def test_fetch_profile_ok(self):
+        with open("tests/atcoder.html", "r", encoding="utf-8") as f:
+            content = "".join(f.readlines())
+
+            with mock.patch("requests.get") as rget_mock:
+                res = Response()
+                res.__setattr__("_content", content)
+                res.__setattr__("status_code", 200)
+                rget_mock.return_value = res
+                profile = self.ac.fetch_profile("iwbc_mzk")
+
+        profile = dict(profile)
+        for key in self._userdata:
+            assert key in profile
+            assert profile[key] == self._userdata[key]
+
+    def test_fetch_profile_ng(self):
+        # Invalid user name
+        with mock.patch("requests.get") as rget_mock:
+            res = Response()
+            res.__setattr__("status_code", 404)
+            rget_mock.return_value = res
+            with pytest.raises(ValueError) as e:
+                self.ac.fetch_profile("iwbc_mzk")
+            assert str(e.value) == "User Name Not Found."
+
