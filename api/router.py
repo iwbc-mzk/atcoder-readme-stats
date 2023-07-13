@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.responses import Response
 
 from src.stats import StatsCard, StatsOption
-from src.atcoder import Atcoder
+from src.atcoder import Atcoder as atcoder
 from src.themes import THEMES
 from src.const import ONE_DAY_SECOND
 
@@ -25,8 +25,6 @@ async def stats(
     hide: Optional[str] = None,  # ex: hide=rating,last_competed
     theme: Optional[str] = None,
 ):
-    ac = Atcoder()
-
     option = StatsOption()
     if width:
         option.width = width
@@ -38,7 +36,7 @@ async def stats(
         option.theme = THEMES[theme] if theme in THEMES else THEMES["default"]
 
     try:
-        userdata = ac.fetch_userdata(username)
+        userdata = atcoder.fetch_userdata(username)
     except ValueError as e:
         return Response(content=e.args[0], status_code=404)
 
@@ -46,11 +44,11 @@ async def stats(
     svg = io.BytesIO(bytes(card.render(), "utf-8")).getvalue()
 
     headers = {
-        "Cache-Control": f"""
-            max-age={ONE_DAY_SECOND // 2},
-            stale-while-revalidate={ONE_DAY_SECOND},
-            s-maxage={ONE_DAY_SECOND}
-        """,
+        # "Cache-Control": f"""
+        #     max-age={ONE_DAY_SECOND // 2},
+        #     stale-while-revalidate={ONE_DAY_SECOND},
+        #     s-maxage={ONE_DAY_SECOND}
+        # """,
     }
 
     return Response(content=svg, headers=headers, media_type="image/svg+xml")
