@@ -1,13 +1,11 @@
 import re
 from datetime import datetime
 from urllib.parse import urljoin
-from typing import Optional
+from typing import Optional, List
 
 from bs4 import BeautifulSoup
 import requests
 from pydantic import BaseModel
-
-from src.model import UserData
 
 
 class Profile(BaseModel):
@@ -19,15 +17,37 @@ class Profile(BaseModel):
     last_competed: Optional[datetime] = None
 
 
+class Competition(BaseModel):
+    date: datetime
+    contest: str
+    rank: int
+    performance: Optional[int]
+    new_rating: Optional[int]
+    diff: Optional[int]
+
+
+class UserData(BaseModel):
+    id: str
+    rank: Optional[int] = None
+    rating: Optional[int] = None
+    highest_rating: Optional[int] = None
+    rated_matches: Optional[int] = None
+    last_competed: Optional[datetime] = None
+    competitions_history: Optional[List[Competition]] = None
+
+
 class Atcoder:
     base_url = "https://atcoder.jp/users/"
 
     @classmethod
-    def fetch_userdata(cls, username: str) -> UserData:
+    def fetch_userdata(cls, username: str, need_compe: bool = False) -> UserData:
         userdata = UserData(id=username)
 
         profile = cls.fetch_profile(username)
         cls._set_profile(userdata, profile)
+
+        if need_compe:
+            userdata.competitions_history = cls.fetch_competition_histry(username)
 
         return userdata
 
@@ -53,6 +73,46 @@ class Atcoder:
             raise ValueError("User Name Not Found.")
 
         return profile
+
+    @classmethod
+    def fetch_competition_histry(cls, username: str) -> List[Competition]:
+        url = cls._get_competition_history_url(username)
+        histries = []
+
+        res = cls._request(url)
+        if res.ok:
+            soup = BeautifulSoup(res.content, "html.parser")
+            hist_element = soup.find(id="history")
+            compe_elements = hist_element.tbody.find_all("tr")
+            for compe_ele in compe_elements:
+                compedata = {}
+                for i, td in enumerate(compe_ele.find_all("td")):
+                    if i == 0:
+                        date = datetime.strptime(td.string, "%Y-%m-%d %H:%M:%S%z")
+                        compedata["date"] = date
+                    elif i == 1:
+                        compedata["contest"] = td.contents[0].string
+                        pass
+                    elif i == 2:
+                        compedata["rank"] = int(td.string)
+                    elif i == 3:
+                        compedata["performance"] = (
+                            None if td.string == "-" else int(td.string)
+                        )
+                    elif i == 4:
+                        compedata["new_rating"] = (
+                            None if td.string == "-" else int(td.string)
+                        )
+                    elif i == 5:
+                        compedata["diff"] = None if td.string == "-" else int(td.string)
+                    else:
+                        pass
+                competition = Competition(**compedata)
+                histries.append(competition)
+        else:
+            raise ValueError("User Name Not Found.")
+
+        return histries
 
     @classmethod
     def _set_profile(cls, userdata: UserData, profile: Profile):

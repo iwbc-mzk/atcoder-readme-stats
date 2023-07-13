@@ -2,7 +2,7 @@ from typing import Any, Union, Literal
 
 from pydantic import BaseModel
 
-from src.model import UserData
+from src.atcoder import UserData
 from src.utils import get_rating_color
 from src.themes import Theme, THEMES
 

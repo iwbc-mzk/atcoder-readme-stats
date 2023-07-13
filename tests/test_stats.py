@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 import pytest
 
 from src.stats import StatsCard, StatsOption
-from src.model import UserData
+from src.atcoder import UserData
 from src.themes import THEMES
 from src.utils import get_rating_color
 
