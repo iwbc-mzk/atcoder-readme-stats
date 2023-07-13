@@ -22,27 +22,28 @@ class StatsOption(BaseModel):
     theme: Theme = THEMES["default"]
 
 
+KEY_LABEL_MAP = {
+    "id": "ID",
+    "rank": "Rank",
+    "rating": "Rating",
+    "highest_rating": "Highest Rating",
+    "rated_matches": "Rated Matches",
+    "last_competed": "Last Competed",
+}
+
+
 class StatsCard:
     def __init__(self, userdata: UserData, option: StatsOption = StatsOption()) -> None:
         self._userdata = userdata
         self._option = option
 
     def _field_to_label(self, field: str) -> str:
-        key_label_map = {
-            "id": "ID",
-            "rank": "Rank",
-            "rating": "Rating",
-            "highest_rating": "Highest Rating",
-            "rated_matches": "Rated Matches",
-            "last_competed": "Last Competed",
-        }
-
-        return key_label_map[field]
+        return KEY_LABEL_MAP[field]
 
     def _statsitems(self) -> list[StatsItem]:
         statsItems = []
-        for key, val in self._userdata.dict().items():
-            if key in {"id", "rating"} | self._option.hide:
+        for key, val in self._userdata.model_dump().items():
+            if key in ({"id", "rating"} | self._option.hide) or key not in KEY_LABEL_MAP:
                 continue
 
             label = self._field_to_label(key)
