@@ -33,7 +33,7 @@ class UserData(BaseModel):
     highest_rating: Optional[int] = None
     rated_matches: Optional[int] = None
     last_competed: Optional[datetime] = None
-    competitions_history: Optional[List[Competition]] = None
+    competitions_history: List[Competition] = []
 
 
 class Atcoder:
