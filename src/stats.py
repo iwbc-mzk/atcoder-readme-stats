@@ -256,8 +256,12 @@ class StatsCard:
         height = self._option.height
         theme = self._option.theme
         show_history = bool(self._option.show_history)
+
+        compe_history_num = len(self._userdata.competitions_history)
         history_row_num = (
-            self._option.show_history if type(self._option.show_history) == int else 3
+            min(self._option.show_history, compe_history_num)
+            if type(self._option.show_history) == int
+            else min(3, compe_history_num)
         )
 
         viewbox_height = 200
