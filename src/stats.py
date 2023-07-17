@@ -189,7 +189,12 @@ class StatsCard:
                     <td class="compe-val val-date">{compe.date.strftime("%Y-%m-%d")}</td>
                     <td class="compe-val"><div class="val-contest">{compe.contest}</div></td>
                     <td class="compe-val">{compe.rank}</td>
-                    <td class="compe-val">{compe.performance}</td>
+                    <td 
+                        class="compe-val" 
+                        {f'style="color: {get_rating_color(compe.performance)}"' if type(compe.performance) == int else ""}
+                    >
+                            {compe.performance if compe.performance else "-"}
+                    </td>
                 </tr>
             """
             )
