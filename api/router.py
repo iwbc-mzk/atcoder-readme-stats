@@ -24,6 +24,7 @@ async def stats(
     height: Optional[Union[int, Auto]] = None,
     hide: Optional[str] = None,  # ex: hide=rating,last_competed
     theme: Optional[str] = None,
+    show_history: Optional[Union[bool, int]] = False,
 ):
     option = StatsOption()
     if width:
@@ -34,9 +35,11 @@ async def stats(
         option.hide = set(hide.split(","))
     if theme:
         option.theme = THEMES[theme] if theme in THEMES else THEMES["default"]
+    if show_history:
+        option.show_history = show_history
 
     try:
-        userdata = atcoder.fetch_userdata(username)
+        userdata = atcoder.fetch_userdata(username, need_compe=bool(show_history))
     except ValueError as e:
         return Response(content=e.args[0], status_code=404)
 
