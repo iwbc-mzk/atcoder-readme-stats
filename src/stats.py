@@ -20,7 +20,7 @@ class StatsOption(BaseModel):
     height: Union[int, Auto] = "auto"
     hide: set[str] = set()
     theme: Theme = THEMES["default"]
-    show_history: Union[bool, int] = False
+    show_history: Union[int, bool] = False
 
 
 KEY_LABEL_MAP = {

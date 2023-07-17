@@ -24,7 +24,7 @@ async def stats(
     height: Optional[Union[int, Auto]] = None,
     hide: Optional[str] = None,  # ex: hide=rating,last_competed
     theme: Optional[str] = None,
-    show_history: Optional[Union[bool, int]] = False,
+    show_history: Optional[Union[int, bool]] = False,
 ):
     option = StatsOption()
     if width:
