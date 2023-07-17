@@ -262,7 +262,7 @@ class StatsCard:
 
         viewbox_height = 200
         if height == "auto" and show_history:
-            viewbox_height += 34 * (history_row_num + 1) + 18
+            viewbox_height += 36 * (history_row_num + 1) + 15
 
         style = f"""
             #svg-body {{
@@ -313,7 +313,7 @@ class StatsCard:
                 width: 100%;
             }}
             .border {{
-                height: 1px;
+                height: 2px;
                 background-color: rgb(228, 226, 226);
                 margin: 5px 20px 0px;
             }}
