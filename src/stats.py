@@ -1,4 +1,5 @@
 from typing import Any, Union, Literal
+import html
 
 from pydantic import BaseModel
 
@@ -187,7 +188,7 @@ class StatsCard:
                 f"""
                 <tr class="compe-row">
                     <td class="compe-val val-date">{compe.date.strftime("%Y-%m-%d")}</td>
-                    <td class="compe-val"><div class="val-contest">{compe.contest}</div></td>
+                    <td class="compe-val"><div class="val-contest">{html.escape(compe.contest)}</div></td>
                     <td class="compe-val">{compe.rank}</td>
                     <td 
                         class="compe-val" 
