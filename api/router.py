@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.responses import Response
 
 from src.stats import StatsCard, StatsOption
-from src.atcoder import Atcoder
+from src.atcoder import Atcoder as atcoder
 from src.themes import THEMES
 from src.const import ONE_DAY_SECOND
 
@@ -24,9 +24,8 @@ async def stats(
     height: Optional[Union[int, Auto]] = None,
     hide: Optional[str] = None,  # ex: hide=rating,last_competed
     theme: Optional[str] = None,
+    show_history: Optional[Union[int, bool]] = False,
 ):
-    ac = Atcoder(username)
-
     option = StatsOption()
     if width:
         option.width = width
@@ -36,9 +35,11 @@ async def stats(
         option.hide = set(hide.split(","))
     if theme:
         option.theme = THEMES[theme] if theme in THEMES else THEMES["default"]
+    if show_history:
+        option.show_history = show_history
 
     try:
-        userdata = ac.fetch_data()
+        userdata = atcoder.fetch_userdata(username, need_compe=bool(show_history))
     except ValueError as e:
         return Response(content=e.args[0], status_code=404)
 

@@ -1,8 +1,9 @@
 from typing import Any, Union, Literal
+import html
 
 from pydantic import BaseModel
 
-from src.model import UserData
+from src.atcoder import UserData
 from src.utils import get_rating_color
 from src.themes import Theme, THEMES
 
@@ -20,6 +21,17 @@ class StatsOption(BaseModel):
     height: Union[int, Auto] = "auto"
     hide: set[str] = set()
     theme: Theme = THEMES["default"]
+    show_history: Union[int, bool] = False
+
+
+KEY_LABEL_MAP = {
+    "id": "ID",
+    "rank": "Rank",
+    "rating": "Rating",
+    "highest_rating": "Highest Rating",
+    "rated_matches": "Rated Matches",
+    "last_competed": "Last Competed",
+}
 
 
 class StatsCard:
@@ -28,21 +40,15 @@ class StatsCard:
         self._option = option
 
     def _field_to_label(self, field: str) -> str:
-        key_label_map = {
-            "id": "ID",
-            "rank": "Rank",
-            "rating": "Rating",
-            "highest_rating": "Highest Rating",
-            "rated_matches": "Rated Matches",
-            "last_competed": "Last Competed",
-        }
-
-        return key_label_map[field]
+        return KEY_LABEL_MAP[field]
 
     def _statsitems(self) -> list[StatsItem]:
         statsItems = []
-        for key, val in self._userdata.dict().items():
-            if key in {"id", "rating"} | self._option.hide:
+        for key, val in self._userdata.model_dump().items():
+            if (
+                key in ({"id", "rating"} | self._option.hide)
+                or key not in KEY_LABEL_MAP
+            ):
                 continue
 
             label = self._field_to_label(key)
@@ -168,10 +174,99 @@ class StatsCard:
             <style id="rating-circle-style">{style}</style>
         """
 
+    def _render_competitions_history(self, row_num):
+        competitions = sorted(
+            self._userdata.competitions_history, key=lambda x: x.date, reverse=True
+        )
+
+        competitions_rows = []
+        for i, compe in enumerate(competitions):
+            if i >= row_num:
+                break
+
+            competitions_rows.append(
+                f"""
+                <tr class="compe-row">
+                    <td class="compe-val val-date">{compe.date.strftime("%Y-%m-%d")}</td>
+                    <td class="compe-val"><div class="val-contest">{html.escape(compe.contest)}</div></td>
+                    <td class="compe-val">{compe.rank}</td>
+                    <td 
+                        class="compe-val" 
+                        {f'style="color: {get_rating_color(compe.performance)}"' if type(compe.performance) == int else ""}
+                    >
+                            {compe.performance if compe.performance else "-"}
+                    </td>
+                </tr>
+            """
+            )
+
+        style = f"""
+            .compe-val {{
+                font-size: 14px;
+                font-weight: 700;
+                text-align: center;
+                padding: 0;
+            }}
+            .compe-table {{
+                width: 100%;
+                table-layout: fixed;
+            }}
+            .compe-table > tr > th {{
+                height: 34px;
+                font-size: 14px;
+                padding: 0;
+            }}
+            .compe-row > td {{
+                height: 34px;
+            }}
+            .val-date {{
+                font-size: 12px;
+            }}
+            .val-contest {{
+                font-size: 12px;
+                text-align: left;
+                overflow: hidden;
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 2;
+            }}
+        """
+
+        return f"""
+            <table class="compe-table">
+                <colgroup>
+                    <col width="20%" />
+                    <col width="50%" />
+                    <col width="15%" />
+                    <col width="15%" />
+                </colgroup>
+                <tr>
+                    <th>Date</th>
+                    <th>Contest</th>
+                    <th>Rank</th>
+                    <th>Perf</th>
+                </tr>
+                {"".join(competitions_rows)}
+            </table>
+            <style>{style}</style>
+        """
+
     def render(self):
         width = self._option.width
         height = self._option.height
         theme = self._option.theme
+        show_history = bool(self._option.show_history)
+
+        compe_history_num = len(self._userdata.competitions_history)
+        history_row_num = (
+            min(self._option.show_history, compe_history_num)
+            if type(self._option.show_history) == int
+            else min(3, compe_history_num)
+        )
+
+        viewbox_height = 200
+        if height == "auto" and show_history:
+            viewbox_height += 36 * (history_row_num + 1) + 15
 
         style = f"""
             #svg-body {{
@@ -193,7 +288,7 @@ class StatsCard:
                 border-radius: 10px;
             }}
             #card-body {{
-                margin: auto;
+                margin: 20px;
                 width: calc(100% - 40px);
                 height: calc(100% - 40px);
                 display: flex;
@@ -218,6 +313,14 @@ class StatsCard:
                 justify-content: center;
                 align-items: center;
             }}
+            #competitions-history-body {{
+                width: 100%;
+            }}
+            .border {{
+                height: 2px;
+                background-color: rgb(228, 226, 226);
+                margin: 5px 20px 0px;
+            }}
             .fadein {{
                 opacity: 0;
                 animation-name: fadein;
@@ -236,12 +339,12 @@ class StatsCard:
         """
         return f"""
             <svg version="1.1" 
-                viewBox="0 0 450 200"
+                viewBox="0 0 450 {viewbox_height}"
                 xmlns="http://www.w3.org/2000/svg"
                 {f'width="{width}"' if type(width) == int else ""}
                 {f'height="{height}"' if type(height) == int else ""}
             >
-                <foreignObject width="450" height="200" requiredExtensions="http://www.w3.org/1999/xhtml">
+                <foreignObject width="450" height="{viewbox_height}" requiredExtensions="http://www.w3.org/1999/xhtml">
                     <body id="svg-body" xmlns="http://www.w3.org/1999/xhtml">
                         <div id="card">
                             <div id="card-body">
@@ -254,6 +357,11 @@ class StatsCard:
                                         {self._renderRatingCircle(self._userdata.rating)}
                                     </div>
                                 </div>
+                                {f'''
+                                    <div class="border"></div>
+                                    <div id="competitions-history-body">
+                                        {self._render_competitions_history(history_row_num)}
+                                    </div>''' if show_history else ""}
                             </div>
                         </div>
                         <style id="main-style">{style}</style>
