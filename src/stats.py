@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from src.atcoder import UserData
 from src.utils import get_rating_color
 from src.themes import Theme, THEMES
+from src.icons import get_icon
 
 Auto = Literal["auto"]
 
@@ -22,6 +23,7 @@ class StatsOption(BaseModel):
     hide: set[str] = set()
     theme: Theme = THEMES["default"]
     show_history: Union[int, bool] = False
+    show_icon: bool = False
 
 
 KEY_LABEL_MAP = {
@@ -64,7 +66,10 @@ class StatsCard:
         stats_rows = [
             f"""
                  <tr class="fadein stats-row" style="animation-delay: {(i + 3) * 150}ms">
-                    <td class="stats-cell" id="{stat.key}-label">{stat.label}:</td>
+                    <td class="stats-cell" id="{stat.key}-label">
+                        {f'<div class="icon">{get_icon(stat.key)}</div>' if self._option.show_icon else ""}
+                        <div>{stat.label}:</div>
+                    </td>
                     <td class="stats-cell" id="{stat.key}-value">{stat.value}</td>
                 </tr>
                 """
@@ -73,13 +78,23 @@ class StatsCard:
         style = f"""
             .stats-row {{
                 height: 28px;
+                display: flex;
             }}
             .stats-cell {{
                 font-size: 16px;
                 font-weight: 700;
+                display: flex;
+                margin: auto auto auto 0px;
             }}
             .stats-cell:nth-child(2) {{
                 text-align: right;
+                margin: auto 0px auto auto;
+            }}
+            .icon {{
+                width: 18px;
+                height: 18px;
+                margin: auto 5px auto 0px;
+                color: {self._option.theme.icon_color};
             }}
         """
 
