@@ -23,7 +23,7 @@ class StatsOption(BaseModel):
     hide: set[str] = set()
     theme: Theme = THEMES["default"]
     show_history: Union[int, bool] = False
-    show_icon: bool = False
+    show_icons: bool = False
 
 
 KEY_LABEL_MAP = {
@@ -67,7 +67,7 @@ class StatsCard:
             f"""
                  <tr class="fadein stats-row" style="animation-delay: {(i + 3) * 150}ms">
                     <td class="stats-cell" id="{stat.key}-label">
-                        {f'<div class="icon">{get_icon(stat.key)}</div>' if self._option.show_icon else ""}
+                        {f'<div class="icon">{get_icon(stat.key)}</div>' if self._option.show_icons else ""}
                         <div>{stat.label}:</div>
                     </td>
                     <td class="stats-cell" id="{stat.key}-value">{stat.value}</td>
