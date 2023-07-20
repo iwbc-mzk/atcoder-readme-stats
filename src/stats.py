@@ -201,7 +201,7 @@ class StatsCard:
 
             competitions_rows.append(
                 f"""
-                <tr class="compe-row">
+                <tr class="fadein compe-row" style="animation-delay: {(i + 8) * 150}ms">
                     <td class="compe-val val-date">{compe.date.strftime("%Y-%m-%d")}</td>
                     <td class="compe-val"><div class="val-contest">{html.escape(compe.contest)}</div></td>
                     <td class="compe-val">{compe.rank}</td>
@@ -255,7 +255,7 @@ class StatsCard:
                     <col width="15%" />
                     <col width="15%" />
                 </colgroup>
-                <tr>
+                <tr class="fadein" style="animation-delay: {7 * 150}ms">
                     <th>Date</th>
                     <th>Contest</th>
                     <th>Rank</th>
