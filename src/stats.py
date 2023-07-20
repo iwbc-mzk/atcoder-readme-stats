@@ -66,9 +66,9 @@ class StatsCard:
         stats_rows = [
             f"""
                  <tr class="fadein stats-row" style="animation-delay: {(i + 3) * 150}ms">
-                    <td class="stats-cell" id="{stat.key}-label">
+                    <td class="stats-cell">
                         {f'<div class="icon">{get_icon(stat.key)}</div>' if self._option.show_icons else ""}
-                        <div>{stat.label}:</div>
+                        <div id="{stat.key}-label">{stat.label}:</div>
                     </td>
                     <td class="stats-cell" id="{stat.key}-value">{stat.value}</td>
                 </tr>

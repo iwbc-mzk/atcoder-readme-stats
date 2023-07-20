@@ -1,5 +1,5 @@
 import datetime
-from typing import Union, Literal
+from typing import Union, Literal, Optional
 
 import cssutils
 from cssutils.css import CSSStyleSheet
@@ -10,6 +10,7 @@ from src.stats import StatsCard, StatsOption
 from src.atcoder import UserData, Competition
 from src.themes import THEMES
 from src.utils import get_rating_color
+from src.icons import get_icon
 
 
 def serialize_css(css: str) -> CSSStyleSheet:
@@ -349,6 +350,11 @@ class TestStatsCard:
             soup.find("style", id="rating-circle-style").string
         )
 
+        stats_style = serialize_css(soup.find("style", id="stats-style").string)
+        icon_color = self._get_property_from_css(stats_style, ".icon", "color")
+        assert icon_color
+        assert icon_color == theme.icon_color
+
     def test_show_history_option(self):
         self._check_competitions_history(show_history=True)
         self._check_competitions_history(show_history=False)
@@ -359,3 +365,21 @@ class TestStatsCard:
 
         self._check_competitions_history(show_history=True, height=500)
         self._check_competitions_history(show_history=False, height=100)
+
+    @pytest.mark.parametrize("show_icons", [None, False, True])
+    def test_show_icons_option(self, show_icons: Optional[bool]):
+        option = StatsOption()
+        if show_icons is not None:
+            option.show_icons = show_icons
+        stats_card = StatsCard(self.userdata, option=option)
+        soup = BeautifulSoup(stats_card.render(), "html.parser")
+
+        icons = soup.find_all(class_="icon")
+        assert len(icons) == (4 if show_icons else 0)
+
+        if show_icons:
+            for icon_ele, id in zip(
+                icons, ["rank", "highest_rating", "rated_matches", "last_competed"]
+            ):
+                icon_svg = icon_ele.find("svg")
+                assert icon_svg.attrs.get("id", "") == id
