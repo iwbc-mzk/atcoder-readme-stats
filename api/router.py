@@ -50,11 +50,7 @@ async def stats(
     svg = io.BytesIO(bytes(card.render(), "utf-8")).getvalue()
 
     headers = {
-        "Cache-Control": f"""
-            max-age={ONE_DAY_SECOND // 2},
-            stale-while-revalidate={ONE_DAY_SECOND},
-            s-maxage={ONE_DAY_SECOND}
-        """,
+        "Cache-Control": f"max-age={ONE_DAY_SECOND // 2},stale-while-revalidate={ONE_DAY_SECOND},s-maxage={ONE_DAY_SECOND}",
     }
 
     return Response(content=svg, headers=headers, media_type="image/svg+xml")
