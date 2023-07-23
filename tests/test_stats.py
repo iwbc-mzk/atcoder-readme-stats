@@ -10,7 +10,7 @@ from src.cards.stats import StatsCard, StatsOption
 from src.atcoder import UserData, Competition
 from src.themes import THEMES
 from src.utils import get_rating_color
-from src.icons import get_icon
+from tests.utils import get_property_from_css
 
 
 def serialize_css(css: str) -> CSSStyleSheet:
@@ -106,12 +106,6 @@ class TestStatsCard:
             ),
         ],
     )
-
-    def _get_property_from_css(self, css, class_or_id, property):
-        for rule in css.cssRules:
-            if rule.typeString == "STYLE_RULE" and rule.selectorText == class_or_id:
-                return rule.style[property]
-        return None
 
     def _check_competitions_history(
         self,
@@ -225,26 +219,26 @@ class TestStatsCard:
         main_styles = serialize_css(soup.find("style", id="main-style").string)
 
         # Font Family
-        font_falmily = self._get_property_from_css(
+        font_falmily = get_property_from_css(
             main_styles, "#svg-body", "font-family"
         )
         assert font_falmily
         assert font_falmily == default_theme.font_family
 
         # Background Color
-        background_color = self._get_property_from_css(
+        background_color = get_property_from_css(
             main_styles, "#card", "background-color"
         )
         assert background_color
         assert background_color == default_theme.background_color
 
         # Title Color
-        title_color = self._get_property_from_css(main_styles, "#title", "color")
+        title_color = get_property_from_css(main_styles, "#title", "color")
         assert title_color
         assert title_color == default_theme.title_color
 
         # Text Color
-        text_color = self._get_property_from_css(main_styles, "#svg-body", "color")
+        text_color = get_property_from_css(main_styles, "#svg-body", "color")
         assert text_color
         assert text_color == default_theme.text_color
 
@@ -253,7 +247,7 @@ class TestStatsCard:
         )
 
         # Rating Color
-        rating_color = self._get_property_from_css(circle_styles, ".rating", "color")
+        rating_color = get_property_from_css(circle_styles, ".rating", "color")
         assert rating_color
         assert rating_color == get_rating_color(self.userdata.rating)
         css_text = None
@@ -323,26 +317,26 @@ class TestStatsCard:
         main_styles = serialize_css(soup.find("style", id="main-style").string)
 
         # Font Family
-        font_falmily = self._get_property_from_css(
+        font_falmily = get_property_from_css(
             main_styles, "#svg-body", "font-family"
         )
         assert font_falmily
         assert font_falmily == theme.font_family
 
         # Background Color
-        background_color = self._get_property_from_css(
+        background_color = get_property_from_css(
             main_styles, "#card", "background-color"
         )
         assert background_color
         assert background_color == theme.background_color
 
         # Title Color
-        title_color = self._get_property_from_css(main_styles, "#title", "color")
+        title_color = get_property_from_css(main_styles, "#title", "color")
         assert title_color
         assert title_color == theme.title_color
 
         # Text Color
-        text_color = self._get_property_from_css(main_styles, "#svg-body", "color")
+        text_color = get_property_from_css(main_styles, "#svg-body", "color")
         assert text_color
         assert text_color == theme.text_color
 
@@ -351,7 +345,7 @@ class TestStatsCard:
         )
 
         stats_style = serialize_css(soup.find("style", id="stats-style").string)
-        icon_color = self._get_property_from_css(stats_style, ".icon", "color")
+        icon_color = get_property_from_css(stats_style, ".icon", "color")
         assert icon_color
         assert icon_color == theme.icon_color
 
