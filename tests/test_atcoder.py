@@ -159,7 +159,7 @@ class TestAtcoder:
             rget_mock.return_value = res
             with pytest.raises(ValueError) as e:
                 atcoder.fetch_userdata("iwbc_mzk")
-            assert str(e.value) == "User Name Not Found."
+            assert e.value.args == ("User Name Not Found.", "Please make sure username is correct.")
 
     def test_fetch_profile_ok(self):
         with open("tests/html/profile.html", "r", encoding="utf-8") as f:
@@ -186,7 +186,7 @@ class TestAtcoder:
             rget_mock.return_value = res
             with pytest.raises(ValueError) as e:
                 atcoder.fetch_profile("iwbc_mzk")
-            assert str(e.value) == "User Name Not Found."
+            assert e.value.args == ("User Name Not Found.", "Please make sure username is correct.")
 
     def test_fetch_competition_history_ok(self):
         with open("tests/html/competition_history.html", "r", encoding="utf-8") as f:
@@ -209,4 +209,4 @@ class TestAtcoder:
             rget_mock.return_value = res
             with pytest.raises(ValueError) as e:
                 atcoder.fetch_competition_histry("iwbc_mzk")
-            assert str(e.value) == "User Name Not Found."
+            assert e.value.args == ("User Name Not Found.", "")
