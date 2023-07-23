@@ -6,7 +6,7 @@ from cssutils.css import CSSStyleSheet
 from bs4 import BeautifulSoup
 import pytest
 
-from src.stats import StatsCard, StatsOption
+from src.cards.stats import StatsCard, StatsOption
 from src.atcoder import UserData, Competition
 from src.themes import THEMES
 from src.utils import get_rating_color
