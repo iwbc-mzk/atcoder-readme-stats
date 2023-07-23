@@ -2,9 +2,12 @@ from src.cards.card import Card
 
 
 class ErrorCard(Card):
-    def __init__(self, message: str, secondary_message: str) -> None:
+    def __init__(
+        self, message: str, secondary_message: str, title="Something went wrong!"
+    ) -> None:
         self._message = message
         self._secondary_message = secondary_message
+        self._title = title
 
         super().__init__(height=150, viewbox_height=150, width=600, viewbox_width=600)
 
@@ -16,9 +19,13 @@ class ErrorCard(Card):
     def secondary_message(self) -> str:
         return self._secondary_message
 
+    @property
+    def title(self) -> str:
+        return self._title
+
     def _render_title(self):
         return f"""
-            <div id="title">Something went wrong!</div>
+            <div id="title">{self._title}</div>
         """
 
     def _render_body(self):
