@@ -4,7 +4,8 @@ import io
 from fastapi import FastAPI
 from fastapi.responses import Response
 
-from src.stats import StatsCard, StatsOption
+from src.cards.stats import StatsCard, StatsOption
+from src.cards.error import ErrorCard
 from src.atcoder import Atcoder as atcoder
 from src.themes import THEMES
 from src.const import ONE_DAY_SECOND
@@ -44,7 +45,12 @@ async def stats(
     try:
         userdata = atcoder.fetch_userdata(username, need_compe=bool(show_history))
     except ValueError as e:
-        return Response(content=e.args[0], status_code=404)
+        card = ErrorCard(e.args[0], e.args[1])
+        svg = io.BytesIO(bytes(card.render(), "utf-8")).getvalue()
+        headers = {
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+        }
+        return Response(content=svg, headers=headers, media_type="image/svg+xml")
 
     card = StatsCard(userdata, option)
     svg = io.BytesIO(bytes(card.render(), "utf-8")).getvalue()

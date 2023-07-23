@@ -70,7 +70,7 @@ class Atcoder:
                 }
             )
         else:
-            raise ValueError("User Name Not Found.")
+            raise ValueError("User Name Not Found.", "Please make sure username is correct.")
 
         return profile
 
@@ -110,7 +110,7 @@ class Atcoder:
                 competition = Competition(**compedata)
                 histries.append(competition)
         else:
-            raise ValueError("User Name Not Found.")
+            raise ValueError("User Name Not Found.", "")
 
         return histries
 
