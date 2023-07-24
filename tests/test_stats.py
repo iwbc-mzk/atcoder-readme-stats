@@ -216,43 +216,35 @@ class TestStatsCard:
         assert int(soup.find(class_="rating-text").string) == self.userdata.rating
 
         default_theme = THEMES["default"]
-        main_styles = serialize_css(soup.find("style", id="main-style").string)
+        styles = serialize_css(soup.find("style", id="main-style").string)
 
         # Font Family
-        font_falmily = get_property_from_css(
-            main_styles, "#svg-body", "font-family"
-        )
+        font_falmily = get_property_from_css(styles, "#svg-body", "font-family")
         assert font_falmily
         assert font_falmily == default_theme.font_family
 
         # Background Color
-        background_color = get_property_from_css(
-            main_styles, "#card", "background-color"
-        )
+        background_color = get_property_from_css(styles, "#card", "background-color")
         assert background_color
         assert background_color == default_theme.background_color
 
         # Title Color
-        title_color = get_property_from_css(main_styles, "#title", "color")
+        title_color = get_property_from_css(styles, "#title", "color")
         assert title_color
         assert title_color == default_theme.title_color
 
         # Text Color
-        text_color = get_property_from_css(main_styles, "#svg-body", "color")
+        text_color = get_property_from_css(styles, "#svg-body", "color")
         assert text_color
         assert text_color == default_theme.text_color
 
-        circle_styles = serialize_css(
-            soup.find("style", id="rating-circle-style").string
-        )
-
         # Rating Color
-        rating_color = get_property_from_css(circle_styles, ".rating", "color")
+        rating_color = get_property_from_css(styles, ".rating", "color")
         assert rating_color
         assert rating_color == get_rating_color(self.userdata.rating)
         css_text = None
-        for rule in circle_styles.cssRules:
-            if rule.typeString == "UNKNOWN_RULE":
+        for rule in styles.cssRules:
+            if rule.typeString == "UNKNOWN_RULE" and "radial-gradient" in rule.cssText and "conic-gradient" in rule.cssText:
                 css_text = rule.cssText
                 break
         assert css_text
@@ -314,38 +306,31 @@ class TestStatsCard:
         stats_card = StatsCard(userdata=self.userdata, option=option)
         soup = BeautifulSoup(stats_card.render(), "html.parser")
 
-        main_styles = serialize_css(soup.find("style", id="main-style").string)
+        styles = serialize_css(soup.find("style", id="main-style").string)
 
         # Font Family
-        font_falmily = get_property_from_css(
-            main_styles, "#svg-body", "font-family"
-        )
+        font_falmily = get_property_from_css(styles, "#svg-body", "font-family")
         assert font_falmily
         assert font_falmily == theme.font_family
 
         # Background Color
         background_color = get_property_from_css(
-            main_styles, "#card", "background-color"
+            styles, "#card", "background-color"
         )
         assert background_color
         assert background_color == theme.background_color
 
         # Title Color
-        title_color = get_property_from_css(main_styles, "#title", "color")
+        title_color = get_property_from_css(styles, "#title", "color")
         assert title_color
         assert title_color == theme.title_color
 
         # Text Color
-        text_color = get_property_from_css(main_styles, "#svg-body", "color")
+        text_color = get_property_from_css(styles, "#svg-body", "color")
         assert text_color
         assert text_color == theme.text_color
 
-        circle_styles = serialize_css(
-            soup.find("style", id="rating-circle-style").string
-        )
-
-        stats_style = serialize_css(soup.find("style", id="stats-style").string)
-        icon_color = get_property_from_css(stats_style, ".icon", "color")
+        icon_color = get_property_from_css(styles, ".icon", "color")
         assert icon_color
         assert icon_color == theme.icon_color
 
