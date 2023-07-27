@@ -1,5 +1,10 @@
 <h1 align="center">Atcoder Readme Stats</h1>
 
+<p align="center">Dynamically generate your Atcoder statistics card.</p>
+
+This repository was created inspired by [anuraghazra/github-readme-stats](https://github.com/anuraghazra/github-readme-stats).  
+Please take a look at this one as well.
+
 # Atcoder Stats Card
 
 ```md
