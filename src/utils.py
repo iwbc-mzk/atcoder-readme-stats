@@ -1,3 +1,7 @@
+from datetime import datetime, timedelta
+from typing import Iterable
+
+
 def get_rating_color(rating: int) -> str:
     color = "#000000"
     colors = {
@@ -16,3 +20,10 @@ def get_rating_color(rating: int) -> str:
             break
 
     return color
+
+
+def date_range(start: datetime, end: datetime, step: timedelta = timedelta(days=1)) -> Iterable[datetime]:
+    current = start
+    while current < end:
+        yield current
+        current += step
