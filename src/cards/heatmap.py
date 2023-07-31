@@ -48,29 +48,14 @@ class HeatmapCard(Card):
         if percentile == 0.0:
             return "#EBEDF0"
         else:
-            base_color = "#196127"
-            if 0 < percentile <= 0.10:
-                transparent = "1A"
-            elif 0.10 < percentile <= 0.20:
-                transparent = "33"
-            elif 0.20 < percentile <= 0.30:
-                transparent = "4D"
-            elif 0.30 < percentile <= 0.40:
-                transparent = "66"
-            elif 0.40 < percentile <= 0.50:
-                transparent = "80"
-            elif 0.50 < percentile <= 0.60:
-                transparent = "99"
-            elif 0.60 < percentile <= 0.70:
-                transparent = "B3"
-            elif 0.70 < percentile <= 0.80:
-                transparent = "CC"
-            elif 0.80 < percentile <= 0.90:
-                transparent = "E6"
+            if 0 < percentile <= 0.25:
+                return "#C6E48B"
+            elif 0.25 < percentile <= 0.50:
+                return "#7BC96F"
+            elif 0.50 < percentile <= 0.70:
+                return "#239A3B"
             else:
-                transparent = "FF"
-
-            return base_color + transparent
+                return "#196127"
 
     def _render_title(self) -> str:
         return f"""
