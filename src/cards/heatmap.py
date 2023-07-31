@@ -36,11 +36,12 @@ class HeatmapCard(Card):
         self._username = username
         self._submissions = submissions
         self._option = option
+        self._weeks_num = 21
 
         super().__init__(
             width=self._option.width,
             height=self._option.height,
-            viewbox_height=300,
+            viewbox_height=200,
             theme=self._option.theme,
         )
 
@@ -66,7 +67,7 @@ class HeatmapCard(Card):
         now = datetime.date.today()
         today = datetime.datetime(now.year, now.month, now.day)
         to_ = today + datetime.timedelta(days=(7 - today.isoweekday()))
-        from_ = to_ - datetime.timedelta(weeks=15)
+        from_ = to_ - datetime.timedelta(weeks=self._weeks_num)
 
         submissions_by_day = []
         last_sub_idx = 0
@@ -85,9 +86,26 @@ class HeatmapCard(Card):
             submissions_by_day.append((date, submissions))
             max_sub_cnt = max(max_sub_cnt, len(submissions))
 
+        week_labels = ["", "Mo", "", "We", "", "Fr", ""]
+        month_labels = [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+        ]
+
         return f"""
             <div id="heatmap-container">
                 <div id="heatmap">
+                    {"".join(f'<div class="heatmap-cell heatmap-label-cell">{label}</div>' for label in week_labels)}
                     {"".join(f'''
                         <div 
                             class="heatmap-cell" 
@@ -133,7 +151,13 @@ class HeatmapCard(Card):
             }}
             .heatmap-cell {{
                 height: 13%;
-                border: 1px solid white;
+                border-bottom: 1px solid white;
+                border-right: 1px solid white;
+                width: calc(100% / {self._weeks_num + 2});
+            }}
+            .heatmap-label-cell {{
+                font-size: 12px;
+                text-align: center;
             }}
 
             @keyframes fadein {{
