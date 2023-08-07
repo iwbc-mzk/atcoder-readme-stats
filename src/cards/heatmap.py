@@ -36,7 +36,7 @@ class HeatmapCard(Card):
         self._username = username
         self._submissions = submissions
         self._option = option
-        self._weeks_num = 25
+        self._weeks_num = 24
 
         super().__init__(
             width=self._option.width,
@@ -178,20 +178,24 @@ class HeatmapCard(Card):
                 height: calc(100% * 1 / 8);
             }}
             .heatmap-cell {{
-                height: 13%;
-                border-bottom: 1px solid white;
-                border-right: 1px solid white;
-                width: calc(100% / {self._weeks_num + 2});
+                height: calc(100% / 7);
+                outline: 1px solid white;
+                width: calc(100% / {self._weeks_num + 1});
             }}
             .label-text {{
-                font-size: 11px;
+                font-size: 13px;
             }}
             .month-label {{
                 text-align: left;
                 text-indent: 2px;
+                line-height: 1;
             }}
             .week-label {{
                 text-align: center;
+                position: relative;
+                right: 5px;
+                outline: 0;
+                line-height: 1;
             }}
 
             @keyframes fadein {{
