@@ -36,7 +36,7 @@ class HeatmapCard(Card):
         self._username = username
         self._submissions = submissions
         self._option = option
-        self._weeks_num = 21
+        self._weeks_num = 25
 
         super().__init__(
             width=self._option.width,
@@ -69,7 +69,7 @@ class HeatmapCard(Card):
         to_ = today + datetime.timedelta(days=(7 - today.isoweekday()))
         from_ = to_ - datetime.timedelta(weeks=self._weeks_num)
 
-        submissions_by_day = []
+        submissions_by_day: List[tuple[datetime.datetime, List[Submission]]] = []
         last_sub_idx = 0
         max_sub_cnt = 0
         for date in date_range(from_, to_):
@@ -102,18 +102,39 @@ class HeatmapCard(Card):
             "Dec",
         ]
 
+        month_cells = ['<div class="heatmap-cell"></div>']
+        cells = []
+        for i, (date, submissions) in enumerate(submissions_by_day):
+            cells.append(
+                f"""
+                <div 
+                    class="heatmap-cell" 
+                    id="{date.strftime("%Y-%m-%d")}" 
+                    style="background-color: {self._get_cell_color(len(submissions)/max_sub_cnt)};
+                "></div>
+            """
+            )
+            if i % 7 == 0:
+                next_month_first = datetime.datetime(date.year, date.month + 1, 1)
+                if next_month_first - date < datetime.timedelta(days=7):
+                    month_cells.append(
+                        f"""
+                            <div class="heatmap-cell label-text month-label">
+                                {month_labels[next_month_first.month - 1]}
+                            </div>
+                        """
+                    )
+                else:
+                    month_cells.append('<div class="heatmap-cell"></div>')
+
+                pass
+
         return f"""
             <div id="heatmap-container">
+                <div id="month-labels">{"".join(month_cells)}</div>
                 <div id="heatmap">
-                    {"".join(f'<div class="heatmap-cell heatmap-label-cell">{label}</div>' for label in week_labels)}
-                    {"".join(f'''
-                        <div 
-                            class="heatmap-cell" 
-                            id="{date.strftime("%Y-%m-%d")}" 
-                            style="background-color: {self._get_cell_color(len(submissions)/max_sub_cnt)};
-                        "></div>'''
-                        for date, submissions in submissions_by_day)
-                    }
+                    {"".join(f'<div class="heatmap-cell label-text week-label">{label}</div>' for label in week_labels)}
+                    {"".join(cells)}
                 </div>
             </div>
         """
@@ -140,6 +161,7 @@ class HeatmapCard(Card):
                 width: 100%;
                 height: 100%;
                 display: flex;
+                flex-direction: column;
             }}
             #heatmap {{
                 margin: 0px;
@@ -147,7 +169,13 @@ class HeatmapCard(Card):
                 flex-direction: column;
                 flex-wrap: wrap;
                 width: 100%;
-                height: 100%;
+                height: calc(100% * 7 / 8);
+            }}
+            #month-labels {{
+                display: flex;
+                flex-direction: row;
+                width: 100%;
+                height: calc(100% * 1 / 8);
             }}
             .heatmap-cell {{
                 height: 13%;
@@ -155,8 +183,14 @@ class HeatmapCard(Card):
                 border-right: 1px solid white;
                 width: calc(100% / {self._weeks_num + 2});
             }}
-            .heatmap-label-cell {{
-                font-size: 12px;
+            .label-text {{
+                font-size: 11px;
+            }}
+            .month-label {{
+                text-align: left;
+                text-indent: 2px;
+            }}
+            .week-label {{
                 text-align: center;
             }}
 
