@@ -1,6 +1,7 @@
 from typing import Optional, List
 import json
 import datetime
+import pickle
 
 import requests
 
@@ -18,6 +19,17 @@ class Submission(BaseModel):
     length: int
     result: str
     execution_time: int
+
+
+class ProblemModel(BaseModel):
+    slope: float = 0.0
+    intercept: float = 0.0
+    variance: float = 0.0
+    difficulty: int = 0
+    discrimination: float = 0.0
+    irt_loglikelihood: float = 0.0
+    irt_users: int = 0.0
+    is_experimental: bool = False
 
 
 class AtcoderProblems:
@@ -47,6 +59,15 @@ class AtcoderProblems:
                 break
         return submissions
 
+    @classmethod
+    def fetch_problem_models(cls) -> dict[str, ProblemModel]:
+        url = "https://kenkoooo.com/atcoder/resources/problem-models.json"
+        res = requests.get(url)
+        if res.ok:
+            problems: dict = json.loads(res.content)
+            problems = {id: ProblemModel(*problem) for id, problem in problems.items()}
+            return problems
+        else:
+            res.raise_for_status()
 
-if __name__ == "__main__":
-    AtcoderProblems.fetch_submissions("iwbc_mzk")
+        return []
