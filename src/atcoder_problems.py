@@ -56,7 +56,8 @@ class AtcoderProblems:
                 new_from = submissions[-1].epoch_second + 1
                 url = f"https://kenkoooo.com/atcoder/atcoder-api/v3/user/submissions?user={user_id}&from_second={new_from}"
             else:
-                break
+                res.raise_for_status()
+
         return submissions
 
     @classmethod
