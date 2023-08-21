@@ -9,7 +9,7 @@ from src.themes import Theme, THEMES
 from src.utils import date_range
 
 Auto = Literal["auto"]
-Target = Literal["all_sub", "all_ac", "unique_ac", "diff"]
+Type = Literal["all_submissions", "all_ac", "unique_ac", "max_difficulty"]
 
 
 class StatsItem(BaseModel):
@@ -21,9 +21,8 @@ class StatsItem(BaseModel):
 class HeatmapOption(BaseModel):
     width: Union[int, Auto] = "auto"
     height: Union[int, Auto] = "auto"
-    hide: set[str] = set()
     theme: Theme = THEMES["default"]
-    target: Target = "all_sub"
+    type: Type = "all_submissions"
 
 
 class HeatmapCard(Card):
@@ -53,7 +52,7 @@ class HeatmapCard(Card):
                 return "#C6E48B"
             elif 0.25 < percentile <= 0.50:
                 return "#7BC96F"
-            elif 0.50 < percentile <= 0.70:
+            elif 0.50 < percentile <= 0.75:
                 return "#239A3B"
             else:
                 return "#196127"
@@ -102,9 +101,12 @@ class HeatmapCard(Card):
             "Dec",
         ]
 
-        month_cells = ['<div class="heatmap-cell"></div>']
+        month_cells = ['<div class="heatmap-cell month-label"></div>']
         cells = []
         for i, (date, submissions) in enumerate(submissions_by_day):
+            if date > today:
+                break
+
             cells.append(
                 f"""
                 <div 
@@ -125,16 +127,18 @@ class HeatmapCard(Card):
                         """
                     )
                 else:
-                    month_cells.append('<div class="heatmap-cell"></div>')
-
-                pass
+                    month_cells.append('<div class="heatmap-cell month-label"></div>')
 
         return f"""
             <div id="heatmap-container">
                 <div id="month-labels">{"".join(month_cells)}</div>
                 <div id="heatmap">
-                    {"".join(f'<div class="heatmap-cell label-text week-label">{label}</div>' for label in week_labels)}
-                    {"".join(cells)}
+                    <div id="week-labels">
+                        {"".join(f'<div class="heatmap-cell label-text week-label">{label}</div>' for label in week_labels)}
+                    </div>
+                    <div id="heatmap-cells">
+                        {"".join(cells)}
+                    </div>
                 </div>
             </div>
         """
@@ -166,10 +170,21 @@ class HeatmapCard(Card):
             #heatmap {{
                 margin: 0px;
                 display: flex;
-                flex-direction: column;
-                flex-wrap: wrap;
                 width: 100%;
                 height: calc(100% * 7 / 8);
+            }}
+            #week-labels {{
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+                width: calc(100% / ({self._weeks_num} + 1))
+            }}
+            #heatmap-cells {{
+                display: flex;
+                flex-direction: column;
+                flex-wrap: wrap;
+                height: 100%;
+                width: calc(100% * {self._weeks_num} / ({self._weeks_num} + 1));
             }}
             #month-labels {{
                 display: flex;
@@ -179,7 +194,7 @@ class HeatmapCard(Card):
             }}
             .heatmap-cell {{
                 height: calc(100% / 7);
-                outline: 1px solid white;
+                outline: 1px solid {self._option.theme.background_color};
                 width: calc(100% / {self._weeks_num + 1});
             }}
             .label-text {{
@@ -189,6 +204,7 @@ class HeatmapCard(Card):
                 text-align: left;
                 text-indent: 2px;
                 line-height: 1;
+                outline: 0;
             }}
             .week-label {{
                 text-align: center;
