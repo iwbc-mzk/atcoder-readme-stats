@@ -60,10 +60,10 @@ class Card(ABC):
                 flex-direction: column;
             }}
             #title-container {{
-                height: 20%;
+                height: 35px;
             }}
             #body-container {{
-                height: 80%;
+                height: calc(100% - 35px);
             }}
         """
 
