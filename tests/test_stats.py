@@ -1,8 +1,6 @@
 import datetime
 from typing import Union, Literal, Optional
 
-import cssutils
-from cssutils.css import CSSStyleSheet
 from bs4 import BeautifulSoup
 import pytest
 
@@ -10,21 +8,7 @@ from src.cards.stats import StatsCard, StatsOption
 from src.atcoder import UserData, Competition
 from src.themes import THEMES
 from src.utils import get_rating_color
-from tests.utils import get_property_from_css
-
-
-def serialize_css(css: str) -> CSSStyleSheet:
-    css = css.replace("\n", "")
-    c = []
-    q = False
-    for s in css:
-        if s in ["'", '"']:
-            q = not q
-        if q or s != " ":
-            c.append(s)
-
-    css = "".join(c)
-    return cssutils.parseString(css)
+from tests.utils import get_property_from_css, serialize_css
 
 
 class TestStatsCard:
@@ -244,7 +228,11 @@ class TestStatsCard:
         assert rating_color == get_rating_color(self.userdata.rating)
         css_text = None
         for rule in styles.cssRules:
-            if rule.typeString == "UNKNOWN_RULE" and "radial-gradient" in rule.cssText and "conic-gradient" in rule.cssText:
+            if (
+                rule.typeString == "UNKNOWN_RULE"
+                and "radial-gradient" in rule.cssText
+                and "conic-gradient" in rule.cssText
+            ):
                 css_text = rule.cssText
                 break
         assert css_text
@@ -314,9 +302,7 @@ class TestStatsCard:
         assert font_falmily == theme.font_family
 
         # Background Color
-        background_color = get_property_from_css(
-            styles, "#card", "background-color"
-        )
+        background_color = get_property_from_css(styles, "#card", "background-color")
         assert background_color
         assert background_color == theme.background_color
 

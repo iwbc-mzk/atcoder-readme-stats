@@ -38,12 +38,12 @@ class Card(ABC):
                 margin: 0;
                 font-family: {self._theme.font_family};
                 color: {self._theme.text_color};
-                height: 100%;
-                width: 100%;
+                height: {self._viewbox_height}px;
+                width: {self._viewbox_width}px;
             }}
              #card {{
-                width: calc(100% - 2px);
-                height: calc(100% - 2px);
+                width: {self._viewbox_width - 2}px;
+                height: {self._viewbox_height - 2}px;
                 
                 display: flex;
                 position: relative;
@@ -54,10 +54,16 @@ class Card(ABC):
             }}
             #card-body {{
                 margin: 20px;
-                width: calc(100% - 40px);
-                height: calc(100% - 40px);
+                width: {self._viewbox_width - 40}px;
+                height: {self._viewbox_height - 40}px;
                 display: flex;
                 flex-direction: column;
+            }}
+            #title-container {{
+                height: 35px;
+            }}
+            #body-container {{
+                height: calc(100% - 35px);
             }}
         """
 
@@ -74,8 +80,12 @@ class Card(ABC):
                     <body id="svg-body" xmlns="http://www.w3.org/1999/xhtml">
                         <div id="card">
                             <div id="card-body">
-                                {self._render_title()}
-                                {self._render_body()}
+                                <div id="title-container">
+                                    {self._render_title()}
+                                </div>
+                                <div id="body-container">
+                                    {self._render_body()}
+                                </div>
                             </div>
                         </div>
                         <style id="main-style">{style}</style>
