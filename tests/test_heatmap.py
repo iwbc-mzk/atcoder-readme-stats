@@ -5,6 +5,8 @@ import pytest
 
 from src.cards.heatmap import HeatmapCard, HeatmapOption
 from src.atcoder_problems import Submission
+from src.themes import THEMES
+from tests.utils import get_property_from_css, serialize_css
 
 
 USER_NAME = "iwbc_mzk"
@@ -262,3 +264,36 @@ class TestHeatmapCard:
         foreignobject = svg.find("foreignobject")
         assert foreignobject.attrs.get("width", "") == "450"
         assert foreignobject.attrs.get("height", "") == "200"
+
+    @pytest.mark.parametrize("theme", ["default", "darcula"])
+    def test_theme_option(self, theme):
+        option = HeatmapOption()
+
+        theme = THEMES[theme]
+        option.theme = theme
+        heatmap_card = HeatmapCard(
+            username=USER_NAME, submissions=SUBMISSIONS, option=option
+        )
+        soup = BeautifulSoup(heatmap_card.render(), "html.parser")
+
+        styles = serialize_css(soup.find("style", id="main-style").string)
+
+        # Font Family
+        font_falmily = get_property_from_css(styles, "#svg-body", "font-family")
+        assert font_falmily
+        assert font_falmily == theme.font_family
+
+        # Background Color
+        background_color = get_property_from_css(styles, "#card", "background-color")
+        assert background_color
+        assert background_color == theme.background_color
+
+        # Title Color
+        title_color = get_property_from_css(styles, "#title", "color")
+        assert title_color
+        assert title_color == theme.title_color
+
+        # Text Color
+        text_color = get_property_from_css(styles, "#svg-body", "color")
+        assert text_color
+        assert text_color == theme.text_color
