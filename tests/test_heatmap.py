@@ -3,6 +3,7 @@ import datetime
 import cssutils
 from cssutils.css import CSSStyleSheet
 from bs4 import BeautifulSoup
+import pytest
 
 from src.cards.heatmap import HeatmapCard, HeatmapOption
 from src.atcoder_problems import Submission
@@ -23,163 +24,160 @@ def serialize_css(css: str) -> CSSStyleSheet:
 
 
 USER_NAME = "iwbc_mzk"
-SUBMISSIONS = sorted(
-    [
-        Submission(
-            **{
-                "contest_id": "abc315",
-                "epoch_second": int(datetime.datetime.now().timestamp()),
-                "execution_time": 55,
-                "id": 44708254,
-                "language": "Python (PyPy 3.10-v7.3.12)",
-                "length": 262,
-                "point": 100,
-                "problem_id": "abc315_a",
-                "result": "AC",
-                "user_id": "iwbc_mzk",
-            }
-        ),
-        Submission(
-            **{
-                "contest_id": "abc315",
-                "epoch_second": int(datetime.datetime.now().timestamp()),
-                "execution_time": 55,
-                "id": 44708254,
-                "language": "Python (PyPy 3.10-v7.3.12)",
-                "length": 262,
-                "point": 100,
-                "problem_id": "abc315_a",
-                "result": "AC",
-                "user_id": "iwbc_mzk",
-            }
-        ),
-        Submission(
-            **{
-                "contest_id": "abc315",
-                "epoch_second": int(datetime.datetime.now().timestamp()),
-                "execution_time": 55,
-                "id": 44708254,
-                "language": "Python (PyPy 3.10-v7.3.12)",
-                "length": 262,
-                "point": 100,
-                "problem_id": "abc315_a",
-                "result": "AC",
-                "user_id": "iwbc_mzk",
-            }
-        ),
-        Submission(
-            **{
-                "contest_id": "abc315",
-                "epoch_second": int(datetime.datetime.now().timestamp()),
-                "execution_time": 55,
-                "id": 44708254,
-                "language": "Python (PyPy 3.10-v7.3.12)",
-                "length": 262,
-                "point": 100,
-                "problem_id": "abc315_a",
-                "result": "AC",
-                "user_id": "iwbc_mzk",
-            }
-        ),
-        Submission(
-            **{
-                "contest_id": "abc315",
-                "epoch_second": int(
-                    (datetime.datetime.now() - datetime.timedelta(days=1)).timestamp()
-                ),
-                "execution_time": 55,
-                "id": 44708254,
-                "language": "Python (PyPy 3.10-v7.3.12)",
-                "length": 262,
-                "point": 100,
-                "problem_id": "abc315_a",
-                "result": "AC",
-                "user_id": "iwbc_mzk",
-            }
-        ),
-        Submission(
-            **{
-                "contest_id": "abc315",
-                "epoch_second": int(
-                    (datetime.datetime.now() - datetime.timedelta(days=1)).timestamp()
-                ),
-                "execution_time": 55,
-                "id": 44708254,
-                "language": "Python (PyPy 3.10-v7.3.12)",
-                "length": 262,
-                "point": 100,
-                "problem_id": "abc315_a",
-                "result": "AC",
-                "user_id": "iwbc_mzk",
-            }
-        ),
-        Submission(
-            **{
-                "contest_id": "abc315",
-                "epoch_second": int(
-                    (datetime.datetime.now() - datetime.timedelta(days=1)).timestamp()
-                ),
-                "execution_time": 55,
-                "id": 44708254,
-                "language": "Python (PyPy 3.10-v7.3.12)",
-                "length": 262,
-                "point": 100,
-                "problem_id": "abc315_a",
-                "result": "AC",
-                "user_id": "iwbc_mzk",
-            }
-        ),
-        Submission(
-            **{
-                "contest_id": "abc315",
-                "epoch_second": int(
-                    (datetime.datetime.now() - datetime.timedelta(days=2)).timestamp()
-                ),
-                "execution_time": 55,
-                "id": 44708254,
-                "language": "Python (PyPy 3.10-v7.3.12)",
-                "length": 262,
-                "point": 100,
-                "problem_id": "abc315_a",
-                "result": "AC",
-                "user_id": "iwbc_mzk",
-            }
-        ),
-        Submission(
-            **{
-                "contest_id": "abc315",
-                "epoch_second": int(
-                    (datetime.datetime.now() - datetime.timedelta(days=2)).timestamp()
-                ),
-                "execution_time": 55,
-                "id": 44708254,
-                "language": "Python (PyPy 3.10-v7.3.12)",
-                "length": 262,
-                "point": 100,
-                "problem_id": "abc315_a",
-                "result": "AC",
-                "user_id": "iwbc_mzk",
-            }
-        ),
-        Submission(
-            **{
-                "contest_id": "abc315",
-                "epoch_second": int(
-                    (datetime.datetime.now() - datetime.timedelta(days=3)).timestamp()
-                ),
-                "execution_time": 55,
-                "id": 44708254,
-                "language": "Python (PyPy 3.10-v7.3.12)",
-                "length": 262,
-                "point": 100,
-                "problem_id": "abc315_a",
-                "result": "AC",
-                "user_id": "iwbc_mzk",
-            }
-        ),
-    ],
-    key=lambda x: x.epoch_second,
-)
+SUBMISSIONS = [
+    Submission(
+        **{
+            "contest_id": "abc315",
+            "epoch_second": int(datetime.datetime.now().timestamp()),
+            "execution_time": 55,
+            "id": 44708254,
+            "language": "Python (PyPy 3.10-v7.3.12)",
+            "length": 262,
+            "point": 100,
+            "problem_id": "abc315_a",
+            "result": "AC",
+            "user_id": "iwbc_mzk",
+        }
+    ),
+    Submission(
+        **{
+            "contest_id": "abc315",
+            "epoch_second": int(datetime.datetime.now().timestamp()),
+            "execution_time": 55,
+            "id": 44708254,
+            "language": "Python (PyPy 3.10-v7.3.12)",
+            "length": 262,
+            "point": 100,
+            "problem_id": "abc315_a",
+            "result": "AC",
+            "user_id": "iwbc_mzk",
+        }
+    ),
+    Submission(
+        **{
+            "contest_id": "abc315",
+            "epoch_second": int(datetime.datetime.now().timestamp()),
+            "execution_time": 55,
+            "id": 44708254,
+            "language": "Python (PyPy 3.10-v7.3.12)",
+            "length": 262,
+            "point": 100,
+            "problem_id": "abc315_a",
+            "result": "AC",
+            "user_id": "iwbc_mzk",
+        }
+    ),
+    Submission(
+        **{
+            "contest_id": "abc315",
+            "epoch_second": int(datetime.datetime.now().timestamp()),
+            "execution_time": 55,
+            "id": 44708254,
+            "language": "Python (PyPy 3.10-v7.3.12)",
+            "length": 262,
+            "point": 100,
+            "problem_id": "abc315_a",
+            "result": "AC",
+            "user_id": "iwbc_mzk",
+        }
+    ),
+    Submission(
+        **{
+            "contest_id": "abc315",
+            "epoch_second": int(
+                (datetime.datetime.now() - datetime.timedelta(days=1)).timestamp()
+            ),
+            "execution_time": 55,
+            "id": 44708254,
+            "language": "Python (PyPy 3.10-v7.3.12)",
+            "length": 262,
+            "point": 100,
+            "problem_id": "abc315_a",
+            "result": "AC",
+            "user_id": "iwbc_mzk",
+        }
+    ),
+    Submission(
+        **{
+            "contest_id": "abc315",
+            "epoch_second": int(
+                (datetime.datetime.now() - datetime.timedelta(days=1)).timestamp()
+            ),
+            "execution_time": 55,
+            "id": 44708254,
+            "language": "Python (PyPy 3.10-v7.3.12)",
+            "length": 262,
+            "point": 100,
+            "problem_id": "abc315_a",
+            "result": "AC",
+            "user_id": "iwbc_mzk",
+        }
+    ),
+    Submission(
+        **{
+            "contest_id": "abc315",
+            "epoch_second": int(
+                (datetime.datetime.now() - datetime.timedelta(days=1)).timestamp()
+            ),
+            "execution_time": 55,
+            "id": 44708254,
+            "language": "Python (PyPy 3.10-v7.3.12)",
+            "length": 262,
+            "point": 100,
+            "problem_id": "abc315_a",
+            "result": "AC",
+            "user_id": "iwbc_mzk",
+        }
+    ),
+    Submission(
+        **{
+            "contest_id": "abc315",
+            "epoch_second": int(
+                (datetime.datetime.now() - datetime.timedelta(days=2)).timestamp()
+            ),
+            "execution_time": 55,
+            "id": 44708254,
+            "language": "Python (PyPy 3.10-v7.3.12)",
+            "length": 262,
+            "point": 100,
+            "problem_id": "abc315_a",
+            "result": "AC",
+            "user_id": "iwbc_mzk",
+        }
+    ),
+    Submission(
+        **{
+            "contest_id": "abc315",
+            "epoch_second": int(
+                (datetime.datetime.now() - datetime.timedelta(days=2)).timestamp()
+            ),
+            "execution_time": 55,
+            "id": 44708254,
+            "language": "Python (PyPy 3.10-v7.3.12)",
+            "length": 262,
+            "point": 100,
+            "problem_id": "abc315_a",
+            "result": "AC",
+            "user_id": "iwbc_mzk",
+        }
+    ),
+    Submission(
+        **{
+            "contest_id": "abc315",
+            "epoch_second": int(
+                (datetime.datetime.now() - datetime.timedelta(days=3)).timestamp()
+            ),
+            "execution_time": 55,
+            "id": 44708254,
+            "language": "Python (PyPy 3.10-v7.3.12)",
+            "length": 262,
+            "point": 100,
+            "problem_id": "abc315_a",
+            "result": "AC",
+            "user_id": "iwbc_mzk",
+        }
+    ),
+]
 
 
 class TestHeatmapCard:
@@ -236,3 +234,47 @@ class TestHeatmapCard:
         ):
             cell = heatmap_cells[-(1 + delta)]
             assert f"background-color: {color}" in cell.attrs.get("style", "")
+
+    @pytest.mark.parametrize(
+        "width, height",
+        [
+            (100, None),
+            (400, None),
+            (700, None),
+            ("auto", None),
+            (None, 100),
+            (None, 400),
+            (None, 700),
+            (None, "auto"),
+            (100, 400),
+            (500, 100),
+            ("auto", "auto"),
+        ],
+    )
+    def test_width_height_option(self, width, height):
+        option = HeatmapOption()
+        if width:
+            option.width = width
+        if height:
+            option.height = height
+        heatmap_card = HeatmapCard(
+            username=USER_NAME, submissions=SUBMISSIONS, option=option
+        )
+        soup = BeautifulSoup(heatmap_card.render(), "html.parser")
+        svg = soup.find("svg")
+
+        if isinstance(width, int):
+            assert "width" in svg.attrs
+            assert width == int(svg.attrs.get("width", -1))
+        else:
+            assert "width" not in svg.attrs
+
+        if isinstance(height, int):
+            assert "height" in svg.attrs
+            assert height == int(svg.attrs.get("height", -1))
+        else:
+            assert "height" not in svg.attrs
+
+        foreignobject = svg.find("foreignobject")
+        assert foreignobject.attrs.get("width", "") == "450"
+        assert foreignobject.attrs.get("height", "") == "200"
