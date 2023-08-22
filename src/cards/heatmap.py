@@ -33,7 +33,7 @@ class HeatmapCard(Card):
         option: HeatmapOption = HeatmapOption(),
     ) -> None:
         self._username = username
-        self._submissions = submissions
+        self._submissions = sorted(submissions, key=lambda x: x.epoch_second)
         self._option = option
         self._weeks_num = 24
 
