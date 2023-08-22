@@ -1,26 +1,10 @@
 import datetime
 
-import cssutils
-from cssutils.css import CSSStyleSheet
 from bs4 import BeautifulSoup
 import pytest
 
 from src.cards.heatmap import HeatmapCard, HeatmapOption
 from src.atcoder_problems import Submission
-
-
-def serialize_css(css: str) -> CSSStyleSheet:
-    css = css.replace("\n", "")
-    c = []
-    q = False
-    for s in css:
-        if s in ["'", '"']:
-            q = not q
-        if q or s != " ":
-            c.append(s)
-
-    css = "".join(c)
-    return cssutils.parseString(css)
 
 
 USER_NAME = "iwbc_mzk"
