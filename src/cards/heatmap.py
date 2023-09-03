@@ -87,7 +87,7 @@ class HeatmapCard(Card):
                     if submission.result == "AC":
                         subs.append(submission)
                 elif type_ == "unique_ac":
-                    if submission.problem_id not in added_problems:
+                    if submission.problem_id not in added_problems and submission.result == "AC":
                         subs.append(submission)
                         added_problems.add(submission.problem_id)
                 else:
