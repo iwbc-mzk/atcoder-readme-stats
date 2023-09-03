@@ -210,7 +210,7 @@ class TestHeatmapCard:
         heatmap_cells = soup.find(id="heatmap-cells").find_all(class_="heatmap-cell")
         begin_cell, end_cell = heatmap_cells[0], heatmap_cells[-1]
         today = datetime.datetime(year=NOW.year, month=NOW.month, day=NOW.day)
-        weekend = today + datetime.timedelta(days=(7 - today.isoweekday()))
+        weekend = today + datetime.timedelta(days=(7 - (today.isoweekday() % 7)))
         begin_day = weekend - datetime.timedelta(weeks=24)
         # 24週前の日曜日から今日まで
         assert begin_cell.attrs.get("id", "") == begin_day.strftime("%Y-%m-%d")
