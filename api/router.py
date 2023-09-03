@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.responses import Response
 
 from src.cards.stats import StatsCard, StatsOption
-from src.cards.heatmap import HeatmapCard, HeatmapOption
+from src.cards.heatmap import HeatmapCard, HeatmapOption, Type as HeatmapType
 from src.cards.error import ErrorCard
 from src.atcoder import Atcoder as atcoder
 from src.atcoder_problems import AtcoderProblems as ap
@@ -73,16 +73,17 @@ async def stats(
     height: Optional[Union[int, Auto]] = None,
     hide: Optional[str] = None,  # ex: hide=rating,last_competed
     theme: Optional[str] = None,
+    type: HeatmapType = None
 ):
     option = HeatmapOption()
     if width:
         option.width = width
     if height:
         option.height = height
-    if hide:
-        option.hide = set(hide.split(","))
     if theme:
         option.theme = THEMES[theme] if theme in THEMES else THEMES["default"]
+    if type:
+        option.type = type
 
     try:
         submissions = ap.fetch_submissions(username)
