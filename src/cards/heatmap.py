@@ -147,8 +147,9 @@ class HeatmapCard(Card):
                 <div 
                     class="heatmap-cell" 
                     id="{date.strftime("%Y-%m-%d")}" 
-                    style="background-color: {self._get_cell_color(len(submissions)/max_sub_cnt)};
-                "></div>
+                    style="background-color: {self._get_cell_color(len(submissions)/max_sub_cnt)};"
+                    _test_submission_count={len(submissions)}
+                ></div>
             """
             )
             if i % 7 == 0:
