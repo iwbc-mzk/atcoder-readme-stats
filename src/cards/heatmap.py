@@ -43,7 +43,7 @@ class HeatmapCard(Card):
         self._weeks_num = 24
         now = datetime.date.today()
         self._today = datetime.datetime(now.year, now.month, now.day)
-        to_ = self._today + datetime.timedelta(days=(7 - self._today.isoweekday()))
+        to_ = self._today + datetime.timedelta(days=(7 - (self._today.isoweekday() % 7)))
         from_ = to_ - datetime.timedelta(weeks=self._weeks_num)
 
         self._submissions = self._submission_per_day(
