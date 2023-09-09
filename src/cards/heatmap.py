@@ -111,8 +111,18 @@ class HeatmapCard(Card):
                 return "#196127"
 
     def _render_title(self) -> str:
+        type_ = self._option.type
+        if type_ == "all":
+            title = f"{self._username}'s Atcoder Submission"
+        elif type_ == "ac":
+            title = f"{self._username}'s Atcoder AC Submission"
+        elif type_ == "unique_ac":
+            title = f"{self._username}'s Atcoder Unique AC Submission"
+        else:
+            title = f"{self._username}'s Atcoder Submission"
+
         return f"""
-            <div id="title" class="fadein">{self._username}'s Atcoder Submission Heatmap</div>
+            <div id="title" class="fadein">{title}</div>
         """
 
     def _render_body(self):
