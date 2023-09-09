@@ -1,7 +1,7 @@
 from typing import Optional, Union, Literal
 import io
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 from fastapi.responses import Response
 
 from src.cards.stats import StatsCard, StatsOption
@@ -71,9 +71,9 @@ async def stats(
     # query parameter
     width: Optional[Union[int, Auto]] = None,
     height: Optional[Union[int, Auto]] = None,
-    hide: Optional[str] = None,  # ex: hide=rating,last_competed
     theme: Optional[str] = None,
-    type: HeatmapType = None
+    type: Optional[HeatmapType] = None,
+    title_lines: Optional[int] = Query(default=None, ge=1)
 ):
     option = HeatmapOption()
     if width:
@@ -84,9 +84,12 @@ async def stats(
         option.theme = THEMES[theme] if theme in THEMES else THEMES["default"]
     if type:
         option.type = type
+    if title_lines:
+        option.title_lines = title_lines
 
     try:
         submissions = ap.fetch_submissions(username)
+        problem_models = ap.fetch_problem_models()
     except ValueError as e:
         card = ErrorCard(e.args[0], e.args[1])
         svg = io.BytesIO(bytes(card.render(), "utf-8")).getvalue()

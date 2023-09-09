@@ -13,7 +13,6 @@ Type = Literal[
     "all",
     "ac",
     "unique_ac",
-    # "max_difficulty"
 ]
 
 
@@ -28,6 +27,7 @@ class HeatmapOption(BaseModel):
     height: Union[int, Auto] = "auto"
     theme: Theme = THEMES["default"]
     type: Type = "all"
+    title_lines: int = 1
 
 
 class HeatmapCard(Card):
@@ -40,10 +40,14 @@ class HeatmapCard(Card):
         self._username = username
 
         self._option = option
+        if self._option.title_lines < 1:
+            self._option.title_lines = 1
         self._weeks_num = 24
         now = datetime.date.today()
         self._today = datetime.datetime(now.year, now.month, now.day)
-        to_ = self._today + datetime.timedelta(days=(7 - (self._today.isoweekday() % 7)))
+        to_ = self._today + datetime.timedelta(
+            days=(7 - (self._today.isoweekday() % 7))
+        )
         from_ = to_ - datetime.timedelta(weeks=self._weeks_num)
 
         self._submissions = self._submission_per_day(
@@ -53,7 +57,7 @@ class HeatmapCard(Card):
         super().__init__(
             width=self._option.width,
             height=self._option.height,
-            viewbox_height=200,
+            viewbox_height=200 + 27 * (self._option.title_lines - 1),
             theme=self._option.theme,
         )
 
@@ -87,7 +91,10 @@ class HeatmapCard(Card):
                     if submission.result == "AC":
                         subs.append(submission)
                 elif type_ == "unique_ac":
-                    if submission.problem_id not in added_problems and submission.result == "AC":
+                    if (
+                        submission.problem_id not in added_problems
+                        and submission.result == "AC"
+                    ):
                         subs.append(submission)
                         added_problems.add(submission.problem_id)
                 else:
@@ -198,6 +205,8 @@ class HeatmapCard(Card):
                 font-size: 20px;
                 font-weight: 600;
                 margin-bottom: 10px;
+                text-wrap: wrap;
+                overflow-wrap: anywhere;
             }}
             .fadein {{
                 opacity: 0;
