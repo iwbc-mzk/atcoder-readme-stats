@@ -187,9 +187,7 @@ class TestHeatmapCard:
         assert svg.attrs["viewbox"] == "0 0 450 200"
 
         # Title
-        assert (
-            soup.find(id="title").string == f"{USER_NAME}'s Atcoder Submission Heatmap"
-        )
+        assert soup.find(id="title").string == f"{USER_NAME}'s Atcoder Submission"
 
         # Week Label
         week_labels = soup.find_all(id="week-labels")
@@ -301,9 +299,14 @@ class TestHeatmapCard:
         assert text_color == theme.text_color
 
     @pytest.mark.parametrize(
-        "type_, count", [("all", "5"), ("ac", "4"), ("unique_ac", "3")]
+        "type_, count, title",
+        [
+            ("all", "5", f"{USER_NAME}'s Atcoder Submission"),
+            ("ac", "4", f"{USER_NAME}'s Atcoder AC Submission"),
+            ("unique_ac", "3", f"{USER_NAME}'s Atcoder Unique AC Submission"),
+        ],
     )
-    def test_type_option(self, type_, count):
+    def test_type_option(self, type_, count, title):
         option = HeatmapOption()
 
         option.type = type_
@@ -312,6 +315,40 @@ class TestHeatmapCard:
         )
         soup = BeautifulSoup(heatmap_card.render(), "html.parser")
 
+        # Title
+        assert soup.find(id="title").string == title
+
+        # Submission Count
         heatmap_cells = soup.find(id="heatmap-cells").find_all(class_="heatmap-cell")
         last_cell = heatmap_cells[-1]
         assert last_cell.attrs.get("_test_submission_count", "") == count
+
+    @pytest.mark.parametrize(
+        "title_lines, height", [(-1, 200), (0, 200), (1, 200), (2, 227), (10, 443)]
+    )
+    def test_title_lines_option(self, title_lines, height):
+        option = HeatmapOption()
+
+        option.title_lines = title_lines
+        heatmap_card = HeatmapCard(
+            username=USER_NAME, submissions=SUBMISSIONS, option=option
+        )
+        soup = BeautifulSoup(heatmap_card.render(), "html.parser")
+
+        svg = soup.find("svg")
+
+        assert svg.attrs["viewbox"] == f"0 0 450 {height}"
+
+        foreignobject = svg.find("foreignobject")
+        assert foreignobject.attrs.get("width", "") == "450"
+        assert foreignobject.attrs.get("height", "") == str(height)
+
+        styles = serialize_css(soup.find("style", id="main-style").string)
+
+        container_height = get_property_from_css(styles, "#title-container", "height")
+        assert container_height
+        assert container_height == "auto"
+
+        title_wrap = get_property_from_css(styles, "#title", "text-wrap")
+        assert title_wrap
+        assert title_wrap == "wrap"

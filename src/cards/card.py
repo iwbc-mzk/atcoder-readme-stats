@@ -60,7 +60,7 @@ class Card(ABC):
                 flex-direction: column;
             }}
             #title-container {{
-                height: 35px;
+                height: auto;
             }}
             #body-container {{
                 height: calc(100% - 35px);
