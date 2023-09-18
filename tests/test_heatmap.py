@@ -206,13 +206,10 @@ class TestHeatmapCard:
 
         # Heatmap Cell
         heatmap_cells = soup.find(id="heatmap-cells").find_all(class_="heatmap-cell")
-        heatmap_cells.sort(key=lambda x: x.attrs.get("id"))
         begin_cell, end_cell = heatmap_cells[0], heatmap_cells[-1]
-
         today = datetime.datetime(year=NOW.year, month=NOW.month, day=NOW.day)
         weekend = today + datetime.timedelta(days=(7 - (today.isoweekday() % 7)))
         begin_day = weekend - datetime.timedelta(weeks=24)
-
         # 24週前の日曜日から今日まで
         assert begin_cell.attrs.get("id", "") == begin_day.strftime("%Y-%m-%d")
         assert end_cell.attrs.get("id", "") == today.strftime("%Y-%m-%d")
@@ -323,7 +320,6 @@ class TestHeatmapCard:
 
         # Submission Count
         heatmap_cells = soup.find(id="heatmap-cells").find_all(class_="heatmap-cell")
-        heatmap_cells.sort(key=lambda x: x.attrs.get("id"))
         last_cell = heatmap_cells[-1]
         assert last_cell.attrs.get("_test_submission_count", "") == count
 
