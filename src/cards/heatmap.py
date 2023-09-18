@@ -154,12 +154,12 @@ class HeatmapCard(Card):
         ]
 
         month_cells = ['<div class="heatmap-cell month-label"></div>']
-        cells = []
+        heatmap_week_cells = [[] for _ in range(7)]  # index0: Sunday ~ index6: Saturday
         for i, (date, submissions) in enumerate(self._submissions):
             if date > self._today:
                 break
 
-            cells.append(
+            heatmap_week_cells[date.isoweekday() % 7].append(
                 f"""
                 <div 
                     class="heatmap-cell" 
@@ -182,15 +182,20 @@ class HeatmapCard(Card):
                 else:
                     month_cells.append('<div class="heatmap-cell month-label"></div>')
 
+        heatmap_cells = [
+            f'<div class="heatmap-row fadein" style="animation-delay: {(i + 2) * 150}ms">{"".join(week_cells)}</div>'
+            for i, week_cells in enumerate(heatmap_week_cells)
+        ]
+
         return f"""
             <div id="heatmap-container">
-                <div id="month-labels">{"".join(month_cells)}</div>
+                <div id="month-labels" class="fadein" style="animation-delay: 150ms">{"".join(month_cells)}</div>
                 <div id="heatmap">
                     <div id="week-labels">
-                        {"".join(f'<div class="heatmap-cell label-text week-label">{label}</div>' for label in week_labels)}
+                        {"".join(f'<div class="heatmap-cell label-text week-label fadein" style="animation-delay: {(i + 2) * 150}ms">{label}</div>' for i, label in enumerate(week_labels))}
                     </div>
                     <div id="heatmap-cells">
-                        {"".join(cells)}
+                        {"".join(heatmap_cells)}
                     </div>
                 </div>
             </div>
@@ -232,14 +237,14 @@ class HeatmapCard(Card):
                 display: flex;
                 flex-direction: column;
                 height: 100%;
-                width: calc(100% / ({self._weeks_num} + 1))
+                width: calc(100% / {self._weeks_num + 1})
             }}
             #heatmap-cells {{
                 display: flex;
                 flex-direction: column;
                 flex-wrap: wrap;
                 height: 100%;
-                width: calc(100% * {self._weeks_num} / ({self._weeks_num} + 1));
+                width: calc(100% * {self._weeks_num} / {self._weeks_num + 1});
             }}
             #month-labels {{
                 display: flex;
@@ -248,9 +253,9 @@ class HeatmapCard(Card):
                 height: calc(100% * 1 / 8);
             }}
             .heatmap-cell {{
-                height: calc(100% / 7);
+                height: 100%;
                 outline: 1px solid {self._option.theme.background_color};
-                width: calc(100% / {self._weeks_num + 1});
+                width: calc(100% / {self._weeks_num});
             }}
             .label-text {{
                 font-size: 13px;
@@ -267,6 +272,12 @@ class HeatmapCard(Card):
                 right: 5px;
                 outline: 0;
                 line-height: 1;
+            }}
+            .heatmap-row {{
+                display: flex;
+                flex-direction: row;
+                height: calc(100% / 7);
+                width: 100%;
             }}
 
             @keyframes fadein {{
