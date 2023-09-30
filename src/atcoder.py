@@ -1,4 +1,5 @@
 import re
+import json
 from datetime import datetime
 from urllib.parse import urljoin
 from typing import Optional, List
@@ -19,11 +20,13 @@ class Profile(BaseModel):
 
 class Competition(BaseModel):
     date: datetime
-    contest: str
-    rank: int
+    is_rated: bool
+    contest_jp: str
+    contest_en: Optional[str]
+    rank: Optional[int]
     performance: Optional[int]
+    old_rating: Optional[int]
     new_rating: Optional[int]
-    diff: Optional[int]
 
 
 class UserData(BaseModel):
@@ -70,7 +73,9 @@ class Atcoder:
                 }
             )
         else:
-            raise ValueError("User Name Not Found.", "Please make sure username is correct.")
+            raise ValueError(
+                "User Name Not Found.", "Please make sure username is correct."
+            )
 
         return profile
 
@@ -81,33 +86,18 @@ class Atcoder:
 
         res = cls._request(url)
         if res.ok:
-            soup = BeautifulSoup(res.content, "html.parser")
-            hist_element = soup.find(id="history")
-            compe_elements = hist_element.tbody.find_all("tr")
-            for compe_ele in compe_elements:
-                compedata = {}
-                for i, td in enumerate(compe_ele.find_all("td")):
-                    if i == 0:
-                        date = datetime.strptime(td.string, "%Y-%m-%d %H:%M:%S%z")
-                        compedata["date"] = date
-                    elif i == 1:
-                        compedata["contest"] = td.contents[0].string
-                        pass
-                    elif i == 2:
-                        compedata["rank"] = int(td.string)
-                    elif i == 3:
-                        compedata["performance"] = (
-                            None if td.string == "-" else int(td.string)
-                        )
-                    elif i == 4:
-                        compedata["new_rating"] = (
-                            None if td.string == "-" else int(td.string)
-                        )
-                    elif i == 5:
-                        compedata["diff"] = None if td.string == "-" else int(td.string)
-                    else:
-                        pass
-                competition = Competition(**compedata)
+            contests = json.loads(res.content)
+            for contest in contests:
+                competition = Competition(
+                    date=datetime.strptime(contest["EndTime"], "%Y-%m-%dT%H:%M:%S%z"),
+                    contest_jp=contest["ContestName"],
+                    contest_en=contest["ContestNameEn"],
+                    is_rated=contest["IsRated"],
+                    rank=contest["Place"],
+                    performance=contest["Performance"],
+                    old_rating=contest["OldRating"],
+                    new_rating=contest["NewRating"],
+                )
                 histries.append(competition)
         else:
             raise ValueError("User Name Not Found.", "")
@@ -128,7 +118,7 @@ class Atcoder:
 
     @classmethod
     def _get_competition_history_url(cls, username: str) -> str:
-        return urljoin(cls.base_url, f"{username}/history")
+        return urljoin(cls.base_url, f"{username}/history/json")
 
     @classmethod
     def _request(cls, url: str) -> requests.Response:

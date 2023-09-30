@@ -1,0 +1,38 @@
+[
+    {
+        "IsRated": true,
+        "Place": 2219,
+        "OldRating": 0,
+        "NewRating": 0,
+        "Performance": 0,
+        "InnerPerformance": 0,
+        "ContestScreenName": "abc293.contest.atcoder.jp",
+        "ContestName": "トヨタ自動車プログラミングコンテスト2023#3（AtCoder Beginner Contest 306）",
+        "ContestNameEn": "Toyota Programming Contest 2023#3（AtCoder Beginner Contest 306）",
+        "EndTime": "2023-06-17T22:40:00+09:00"
+    },
+    {
+        "IsRated": true,
+        "Place": 1253,
+        "OldRating": 751,
+        "NewRating": 789,
+        "Performance": 1036,
+        "InnerPerformance": 1036,
+        "ContestScreenName": "abc294.contest.atcoder.jp",
+        "ContestName": "AtCoder Regular Contest 162",
+        "ContestNameEn": "AtCoder Regular Contest 162",
+        "EndTime": "2023-06-18T23:00:00+09:00"
+    },
+    {
+        "IsRated": true,
+        "Place": 3814,
+        "OldRating": 789,
+        "NewRating": 772,
+        "Performance": 647,
+        "InnerPerformance": 647,
+        "ContestScreenName": "abc295.contest.atcoder.jp",
+        "ContestName": "東京海上日動プログラミングコンテスト2023（AtCoder Beginner Contest 307）",
+        "ContestNameEn": "Tokio Marine & Nichido Fire Insurance Programming Contest 2023（AtCoder Beginner Contest 307)",
+        "EndTime": "2023-06-24T22:40:00+09:00"
+    }
+]

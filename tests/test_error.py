@@ -1,16 +1,9 @@
-import datetime
-from typing import Union, Literal, Optional
-
 import cssutils
 from cssutils.css import CSSStyleSheet
 from bs4 import BeautifulSoup
-import pytest
 
 from src.cards.error import ErrorCard
-from src.atcoder import UserData, Competition
 from src.themes import THEMES
-from src.utils import get_rating_color
-from src.icons import get_icon
 from tests.utils import get_property_from_css
 
 
