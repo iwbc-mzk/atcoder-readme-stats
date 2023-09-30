@@ -137,7 +137,7 @@ class StatsCard(Card):
                 f"""
                 <tr class="fadein compe-row" style="animation-delay: {(i + 8) * 150}ms">
                     <td class="compe-val val-date">{compe.date.strftime("%Y-%m-%d")}</td>
-                    <td class="compe-val"><div class="val-contest">{html.escape(compe.contest)}</div></td>
+                    <td class="compe-val"><div class="val-contest">{html.escape(compe.contest_en if compe.contest_en else compe.contest_jp )}</div></td>
                     <td class="compe-val">{compe.rank}</td>
                     <td 
                         class="compe-val" 
