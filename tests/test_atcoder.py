@@ -1,6 +1,7 @@
 from unittest import mock
 import datetime
 from typing import List
+import json
 
 import pytest
 from requests import Response
@@ -37,11 +38,13 @@ class TestAtcoder:
                             40,
                             tzinfo=datetime.timezone(datetime.timedelta(seconds=32400)),
                         ),
-                        "contest": "Toyota Programming Contest 2023#3（AtCoder Beginner Contest 306）",
+                        "is_rated": True,
+                        "contest_jp": "トヨタ自動車プログラミングコンテスト2023#3（AtCoder Beginner Contest 306）",
+                        "contest_en": "Toyota Programming Contest 2023#3（AtCoder Beginner Contest 306）",
                         "rank": 2219,
-                        "performance": None,
-                        "new_rating": None,
-                        "diff": None,
+                        "performance": 0,
+                        "new_rating": 0,
+                        "old_rating": 0,
                     }
                 ),
                 Competition(
@@ -54,11 +57,13 @@ class TestAtcoder:
                             0,
                             tzinfo=datetime.timezone(datetime.timedelta(seconds=32400)),
                         ),
-                        "contest": "AtCoder Regular Contest 162",
+                        "is_rated": True,
+                        "contest_jp": "AtCoder Regular Contest 162",
+                        "contest_en": "AtCoder Regular Contest 162",
                         "rank": 1253,
                         "performance": 1036,
                         "new_rating": 789,
-                        "diff": 38,
+                        "old_rating": 751,
                     }
                 ),
                 Competition(
@@ -71,11 +76,13 @@ class TestAtcoder:
                             40,
                             tzinfo=datetime.timezone(datetime.timedelta(seconds=32400)),
                         ),
-                        "contest": "Tokio Marine & Nichido Fire Insurance Programming Contest 2023（AtCoder Beginner Contest 307)",
+                        "is_rated": True,
+                        "contest_jp": "東京海上日動プログラミングコンテスト2023（AtCoder Beginner Contest 307）",
+                        "contest_en": "Tokio Marine & Nichido Fire Insurance Programming Contest 2023（AtCoder Beginner Contest 307)",
                         "rank": 3814,
                         "performance": 647,
                         "new_rating": 772,
-                        "diff": -17,
+                        "old_rating": 789,
                     }
                 ),
             ],
@@ -132,7 +139,7 @@ class TestAtcoder:
 
         # with competitions history
         with open("tests/html/profile.html", "r", encoding="utf-8") as pr, open(
-            "tests/html/competition_history.html", "r", encoding="utf-8"
+            "tests/json/competition_history.json", "r", encoding="utf-8"
         ) as ch:
             profile = "".join(pr.readlines())
             compe = "".join(ch.readlines())
@@ -159,7 +166,10 @@ class TestAtcoder:
             rget_mock.return_value = res
             with pytest.raises(ValueError) as e:
                 atcoder.fetch_userdata("iwbc_mzk")
-            assert e.value.args == ("User Name Not Found.", "Please make sure username is correct.")
+            assert e.value.args == (
+                "User Name Not Found.",
+                "Please make sure username is correct.",
+            )
 
     def test_fetch_profile_ok(self):
         with open("tests/html/profile.html", "r", encoding="utf-8") as f:
@@ -186,10 +196,13 @@ class TestAtcoder:
             rget_mock.return_value = res
             with pytest.raises(ValueError) as e:
                 atcoder.fetch_profile("iwbc_mzk")
-            assert e.value.args == ("User Name Not Found.", "Please make sure username is correct.")
+            assert e.value.args == (
+                "User Name Not Found.",
+                "Please make sure username is correct.",
+            )
 
     def test_fetch_competition_history_ok(self):
-        with open("tests/html/competition_history.html", "r", encoding="utf-8") as f:
+        with open("tests/json/competition_history.json", "r", encoding="utf-8") as f:
             content = "".join(f.readlines())
 
             with mock.patch("requests.get") as rget_mock:

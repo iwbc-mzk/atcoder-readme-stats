@@ -30,11 +30,13 @@ class TestStatsCard:
                         40,
                         tzinfo=datetime.timezone(datetime.timedelta(seconds=32400)),
                     ),
-                    "contest": "Toyota Programming Contest 2023#3（AtCoder Beginner Contest 306）",
+                    "is_rated": True,
+                    "contest_jp": "トヨタ自動車プログラミングコンテスト2023#3（AtCoder Beginner Contest 306）",
+                    "contest_en": "Toyota Programming Contest 2023#3（AtCoder Beginner Contest 306）",
                     "rank": 2219,
                     "performance": None,
                     "new_rating": None,
-                    "diff": None,
+                    "old_rating": None,
                 }
             ),
             Competition(
@@ -47,11 +49,13 @@ class TestStatsCard:
                         0,
                         tzinfo=datetime.timezone(datetime.timedelta(seconds=32400)),
                     ),
-                    "contest": "AtCoder Regular Contest 162",
+                    "is_rated": True,
+                    "contest_jp": "AtCoder Regular Contest 162",
+                    "contest_en": "AtCoder Regular Contest 162",
                     "rank": 1253,
                     "performance": 1036,
                     "new_rating": 1000,
-                    "diff": 100,
+                    "old_rating": 900,
                 }
             ),
             Competition(
@@ -64,11 +68,13 @@ class TestStatsCard:
                         40,
                         tzinfo=datetime.timezone(datetime.timedelta(seconds=32400)),
                     ),
-                    "contest": "Tokio Marine & Nichido Fire Insurance Programming Contest 2023（AtCoder Beginner Contest 307)",
+                    "is_rated": True,
+                    "contest_jp": "東京海上日動プログラミングコンテスト2023（AtCoder Beginner Contest 307）",
+                    "contest_en": "Tokio Marine & Nichido Fire Insurance Programming Contest 2023（AtCoder Beginner Contest 307)",
                     "rank": 3814,
                     "performance": 647,
                     "new_rating": 772,
-                    "diff": -170,
+                    "old_rating": 842,
                 }
             ),
             Competition(
@@ -81,11 +87,13 @@ class TestStatsCard:
                         40,
                         tzinfo=datetime.timezone(datetime.timedelta(seconds=32400)),
                     ),
-                    "contest": "Tokio Marine & Nichido Fire Insurance Programming Contest 2023（AtCoder Beginner Contest 308)",
+                    "is_rated": True,
+                    "contest_jp": "",
+                    "contest_en": "Tokio Marine & Nichido Fire Insurance Programming Contest 2023（AtCoder Beginner Contest 308)",
                     "rank": 3814,
                     "performance": 100,
                     "new_rating": 300,
-                    "diff": -17,
+                    "old_rating": 317,
                 }
             ),
         ],
@@ -131,7 +139,11 @@ class TestStatsCard:
                 if i == 0:
                     assert val == validator.date.strftime("%Y-%m-%d")
                 elif i == 1:
-                    assert val == validator.contest
+                    assert (
+                        val == validator.contest_en
+                        if validator.contest_en
+                        else validator.contest_jp
+                    )
                 elif i == 2:
                     assert int(val) == validator.rank if validator.rank else "-"
                 else:
@@ -320,16 +332,20 @@ class TestStatsCard:
         assert icon_color
         assert icon_color == theme.icon_color
 
-    def test_show_history_option(self):
-        self._check_competitions_history(show_history=True)
-        self._check_competitions_history(show_history=False)
-
-        self._check_competitions_history(show_history=0)
-        self._check_competitions_history(show_history=1)
-        self._check_competitions_history(show_history=10)
-
-        self._check_competitions_history(show_history=True, height=500)
-        self._check_competitions_history(show_history=False, height=100)
+    @pytest.mark.parametrize(
+        "show_history, height",
+        [
+            (True, "auto"),
+            (False, "auto"),
+            (0, "auto"),
+            (1, "auto"),
+            (10, "auto"),
+            (True, 500),
+            (False, 100),
+        ],
+    )
+    def test_show_history_option(self, show_history, height):
+        self._check_competitions_history(show_history=show_history, height=height)
 
     @pytest.mark.parametrize("show_icons", [None, False, True])
     def test_show_icons_option(self, show_icons: Optional[bool]):
