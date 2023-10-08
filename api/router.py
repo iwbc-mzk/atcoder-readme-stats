@@ -29,6 +29,7 @@ async def stats(
     theme: Optional[str] = None,
     show_history: Optional[Union[int, bool]] = False,
     show_icons: Optional[bool] = False,
+    disable_animations: Optional[bool] = False,
 ):
     option = StatsOption()
     if width:
@@ -43,6 +44,8 @@ async def stats(
         option.show_history = show_history
     if show_icons:
         option.show_icons = show_icons
+    if disable_animations:
+        option.disable_animations = disable_animations
 
     try:
         userdata = atcoder.fetch_userdata(username, need_compe=bool(show_history))

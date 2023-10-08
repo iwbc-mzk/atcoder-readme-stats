@@ -25,6 +25,7 @@ class StatsOption(BaseModel):
     theme: Theme = THEMES["default"]
     show_history: Union[int, bool] = False
     show_icons: bool = False
+    disable_animations: bool = False
 
 
 KEY_LABEL_MAP = {
@@ -93,7 +94,7 @@ class StatsCard(Card):
 
         stats_rows = [
             f"""
-                 <tr class="fadein stats-row" style="animation-delay: {(i + 3) * 150}ms">
+                 <tr class="{"" if self._option.disable_animations else "fadein"} stats-row" style="animation-delay: {(i + 3) * 150}ms">
                     <td class="stats-cell">
                         {f'<div class="icon">{get_icon(stat.key)}</div>' if self._option.show_icons else ""}
                         <div id="{stat.key}-label">{stat.label}:</div>
@@ -112,7 +113,7 @@ class StatsCard(Card):
 
     def _renderRatingCircle(self, rating: int) -> str:
         return f"""
-            <div class="container fadein">
+            <div class="container {"" if self._option.disable_animations else "fadein"}">
                 <div class="circle">
                     <div class="rating">
                         <span class="rating-label">Rating</span>
@@ -135,7 +136,7 @@ class StatsCard(Card):
 
             competitions_rows.append(
                 f"""
-                <tr class="fadein compe-row" style="animation-delay: {(i + 8) * 150}ms">
+                <tr class="{"" if self._option.disable_animations else "fadein"} compe-row" style="animation-delay: {(i + 8) * 150}ms">
                     <td class="compe-val val-date">{compe.date.strftime("%Y-%m-%d")}</td>
                     <td class="compe-val"><div class="val-contest">{html.escape(compe.contest_en if compe.contest_en else compe.contest_jp )}</div></td>
                     <td class="compe-val">{compe.rank}</td>
@@ -157,7 +158,7 @@ class StatsCard(Card):
                     <col width="15%" />
                     <col width="15%" />
                 </colgroup>
-                <tr class="fadein" style="animation-delay: {7 * 150}ms">
+                <tr class="{"" if self._option.disable_animations else "fadein"}" style="animation-delay: {7 * 150}ms">
                     <th>Date</th>
                     <th>Contest</th>
                     <th>Rank</th>
@@ -169,7 +170,7 @@ class StatsCard(Card):
 
     def _render_title(self) -> str:
         return f"""
-            <div id="title" class="fadein">{self._userdata.id}'s Atcoder Stats</div>
+            <div id="title" class="{"" if self._option.disable_animations else "fadein"}">{self._userdata.id}'s Atcoder Stats</div>
         """
 
     def _render_body(self):
@@ -200,15 +201,16 @@ class StatsCard(Card):
         # 暫定対応
         # できれば@propertyやanimationを使いたい
         keyframes = []
-        N = 30
-        for i in range(N + 1):
-            prop = f"""
-                {i * 100 // N}% {{
-                    background-image: radial-gradient({self._option.theme.background_color} 60%, transparent 61%),
-                    conic-gradient({color} {i * deg/N}deg, {color}33 {i * deg/N}deg 360deg);
-                }}
-            """
-            keyframes.append(prop)
+        if not self._option.disable_animations:
+            N = 30
+            for i in range(N + 1):
+                prop = f"""
+                    {i * 100 // N}% {{
+                        background-image: radial-gradient({self._option.theme.background_color} 60%, transparent 61%),
+                        conic-gradient({color} {i * deg/N}deg, {color}33 {i * deg/N}deg 360deg);
+                    }}
+                """
+                keyframes.append(prop)
 
         return f"""
             #title {{
@@ -286,7 +288,7 @@ class StatsCard(Card):
             }}
             @keyframes conic-gradient {{
                 0% {{
-                    --deg: 0deg;
+                    --deg: f{f'{deg}deg' if self._option.disable_animations else "0deg"};
                 }}
                 100% {{
                     --deg: {deg}deg;
@@ -310,9 +312,11 @@ class StatsCard(Card):
                 display: flex;
                 justify-content: center;
                 align-items: center;
+  
                 animation-name: conic-gradient;
                 animation-duration: 0.8s;
                 animation-fill-mode: forwards;
+                background-image: radial-gradient({self._option.theme.background_color} 60%, transparent 61%), conic-gradient({color} {deg}deg, {color}33 {deg}deg 360deg);
             }}
             .rating {{
                 color: {color};
