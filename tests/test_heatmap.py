@@ -1,4 +1,5 @@
 import datetime
+from typing import Optional
 
 from bs4 import BeautifulSoup
 import pytest
@@ -356,3 +357,18 @@ class TestHeatmapCard:
         title_wrap = get_property_from_css(styles, "#title", "text-wrap")
         assert title_wrap
         assert title_wrap == "wrap"
+
+    @pytest.mark.parametrize("disable_animations", [True, False])
+    def test_disable_animations_option(self, disable_animations: Optional[bool]):
+        option = HeatmapOption()
+        option.disable_animations = disable_animations
+        stats_card = HeatmapCard(
+            username=USER_NAME, submissions=SUBMISSIONS, option=option
+        )
+        soup = BeautifulSoup(stats_card.render(), "html.parser")
+
+        fadein_elements = soup.find_all(class_="fadein")
+        if disable_animations:
+            assert len(fadein_elements) == 0
+        else:
+            assert len(fadein_elements) >= 0
