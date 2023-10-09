@@ -68,7 +68,7 @@ async def stats(
 
 
 @app.get("/heatmap/{username}")
-async def stats(
+async def heatmap(
     # path parameter
     username: str,
     # query parameter
@@ -77,6 +77,7 @@ async def stats(
     theme: Optional[str] = None,
     type: Optional[HeatmapType] = None,
     title_lines: Optional[int] = Query(default=None, ge=1),
+    disable_animations: Optional[bool] = False,
 ):
     option = HeatmapOption()
     if width:
@@ -89,6 +90,8 @@ async def stats(
         option.type = type
     if title_lines:
         option.title_lines = title_lines
+    if disable_animations:
+        option.disable_animations = disable_animations
 
     try:
         submissions = ap.fetch_submissions(username)

@@ -28,6 +28,7 @@ class HeatmapOption(BaseModel):
     theme: Theme = THEMES["default"]
     type: Type = "all"
     title_lines: int = 1
+    disable_animations: bool = False
 
 
 class HeatmapCard(Card):
@@ -129,7 +130,7 @@ class HeatmapCard(Card):
             title = f"{self._username}'s Atcoder Submission"
 
         return f"""
-            <div id="title" class="fadein">{title}</div>
+            <div id="title" class="{"" if self._option.disable_animations else "fadein"}">{title}</div>
         """
 
     def _render_body(self):
@@ -183,16 +184,16 @@ class HeatmapCard(Card):
                     month_cells.append('<div class="heatmap-cell month-label"></div>')
 
         heatmap_cells = [
-            f'<div class="heatmap-row fadein" style="animation-delay: {(i + 2) * 150}ms">{"".join(week_cells)}</div>'
+            f'<div class="heatmap-row {"" if self._option.disable_animations else "fadein"}" style="animation-delay: {(i + 2) * 150}ms">{"".join(week_cells)}</div>'
             for i, week_cells in enumerate(heatmap_week_cells)
         ]
 
         return f"""
             <div id="heatmap-container">
-                <div id="month-labels" class="fadein" style="animation-delay: 150ms">{"".join(month_cells)}</div>
+                <div id="month-labels" class="{"" if self._option.disable_animations else "fadein"}" style="animation-delay: 150ms">{"".join(month_cells)}</div>
                 <div id="heatmap">
                     <div id="week-labels">
-                        {"".join(f'<div class="heatmap-cell label-text week-label fadein" style="animation-delay: {(i + 2) * 150}ms">{label}</div>' for i, label in enumerate(week_labels))}
+                        {"".join(f'<div class="heatmap-cell label-text week-label {"" if self._option.disable_animations else "fadein"}" style="animation-delay: {(i + 2) * 150}ms">{label}</div>' for i, label in enumerate(week_labels))}
                     </div>
                     <div id="heatmap-cells">
                         {"".join(heatmap_cells)}
