@@ -29,6 +29,7 @@ async def stats(
     theme: Optional[str] = None,
     show_history: Optional[Union[int, bool]] = False,
     show_icons: Optional[bool] = False,
+    disable_animations: Optional[bool] = False,
 ):
     option = StatsOption()
     if width:
@@ -43,6 +44,8 @@ async def stats(
         option.show_history = show_history
     if show_icons:
         option.show_icons = show_icons
+    if disable_animations:
+        option.disable_animations = disable_animations
 
     try:
         userdata = atcoder.fetch_userdata(username, need_compe=bool(show_history))
@@ -65,7 +68,7 @@ async def stats(
 
 
 @app.get("/heatmap/{username}")
-async def stats(
+async def heatmap(
     # path parameter
     username: str,
     # query parameter
@@ -74,6 +77,7 @@ async def stats(
     theme: Optional[str] = None,
     type: Optional[HeatmapType] = None,
     title_lines: Optional[int] = Query(default=None, ge=1),
+    disable_animations: Optional[bool] = False,
 ):
     option = HeatmapOption()
     if width:
@@ -86,6 +90,8 @@ async def stats(
         option.type = type
     if title_lines:
         option.title_lines = title_lines
+    if disable_animations:
+        option.disable_animations = disable_animations
 
     try:
         submissions = ap.fetch_submissions(username)
