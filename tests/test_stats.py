@@ -364,3 +364,16 @@ class TestStatsCard:
             ):
                 icon_svg = icon_ele.find("svg")
                 assert icon_svg.attrs.get("id", "") == id
+
+    @pytest.mark.parametrize("disable_animations", [True, False])
+    def test_disable_animations_option(self, disable_animations: Optional[bool]):
+        option = StatsOption()
+        option.disable_animations = disable_animations
+        stats_card = StatsCard(self.userdata, option=option)
+        soup = BeautifulSoup(stats_card.render(), "html.parser")
+
+        fadein_elements = soup.find_all(class_="fadein")
+        if disable_animations:
+            assert len(fadein_elements) == 0
+        else:
+            assert len(fadein_elements) >= 0
