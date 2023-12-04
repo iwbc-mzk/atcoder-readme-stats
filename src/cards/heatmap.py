@@ -171,7 +171,12 @@ class HeatmapCard(Card):
             """
             )
             if i % 7 == 0:
-                next_month_first = datetime.datetime(date.year, date.month + 1, 1)
+                print(date)
+                if date.month == 12:
+                    next_month_first = datetime.datetime(date.year + 1, 1, 1)
+                else:
+                    next_month_first = datetime.datetime(date.year, date.month + 1, 1)
+
                 if next_month_first - date < datetime.timedelta(days=7):
                     month_cells.append(
                         f"""
