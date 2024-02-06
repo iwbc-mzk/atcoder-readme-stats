@@ -8,7 +8,7 @@ packages = [{include = "atcoder_readme_stats"}]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-fastapi = "^0.100.0"
+fastapi = "^0.109.2"
 uvicorn = {extras = ["standard"], version = "^0.22.0"}
 beautifulsoup4 = "^4.12.2"
 requests = "^2.31.0"
