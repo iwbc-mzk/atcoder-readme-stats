@@ -116,9 +116,9 @@ class StatsCard(Card):
             <div class="container {"" if self._option.disable_animations else "fadein"}">
                 <div class="circle">
                     <div class="rating">
-                        <span class="rating-label">Rating</span>
+                        <span id="rating-label">Rating</span>
                         <br />
-                        <span class="rating-text">{rating}</span>
+                        <span id="rating-value">{rating}</span>
                     </div>
                 </div>
             </div>
@@ -181,9 +181,11 @@ class StatsCard(Card):
                 <div id="stats">
                     {self._renderStats()}
                 </div>
-                <div id="rank-circle">
-                    {self._renderRatingCircle(self._userdata.rating)}
-                </div>
+                {f'''
+                    <div id="rank-circle">
+                        {self._renderRatingCircle(self._userdata.rating)}
+                    </div>
+                 ''' if "rating" not in self._option.hide else ""}
             </div>
             {f'''
                 <div class="border"></div>
@@ -225,6 +227,7 @@ class StatsCard(Card):
             }}
             #stats {{
                 width: 60%;
+                margin: auto;
             }}
             #rank-circle {{
                 width: 40%;
@@ -321,11 +324,11 @@ class StatsCard(Card):
             .rating {{
                 color: {color};
             }}
-            .rating-label {{
+            #rating-label {{
                 font-size: 16px;
                 font-weight: 600;
             }}
-            .rating-text {{
+            #rating-value {{
                 font-size: 24px;
                 font-weight: 800;
             }}

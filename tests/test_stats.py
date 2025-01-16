@@ -184,8 +184,8 @@ class TestStatsCard:
         assert not soup.find(id="id-label")
         assert not soup.find(id="id-value")
         # Rating
-        assert not soup.find(id="rating-label")
-        assert not soup.find(id="rating-value")
+        assert soup.find(id="rating-label")
+        assert soup.find(id="rating-value")
         # Rank
         assert soup.find(id="rank-label").string == "Rank:"
         assert int(soup.find(id="rank-value").string) == self.userdata.rank
@@ -208,8 +208,8 @@ class TestStatsCard:
         ).string == self.userdata.last_competed.strftime("%Y/%m/%d")
 
         # Rating
-        assert soup.find(class_="rating-label").string == "Rating"
-        assert int(soup.find(class_="rating-text").string) == self.userdata.rating
+        assert soup.find(id="rating-label").string == "Rating"
+        assert int(soup.find(id="rating-value").string) == self.userdata.rating
 
         default_theme = THEMES["default"]
         styles = serialize_css(soup.find("style", id="main-style").string)
@@ -253,7 +253,13 @@ class TestStatsCard:
 
     def test_hide_stats(self):
         option = StatsOption()
-        option.hide = {"rank", "highest_rating", "rated_matches", "last_competed"}
+        option.hide = {
+            "rank",
+            "rating",
+            "highest_rating",
+            "rated_matches",
+            "last_competed",
+        }
         stats_card = StatsCard(userdata=self.userdata, option=option)
         soup = BeautifulSoup(stats_card.render(), "html.parser")
 
