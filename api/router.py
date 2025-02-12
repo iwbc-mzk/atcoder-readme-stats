@@ -3,6 +3,7 @@ import io
 
 from fastapi import FastAPI, Query
 from fastapi.responses import Response
+from pydantic import ValidationError
 
 from src.cards.stats import StatsCard, StatsOption
 from src.cards.heatmap import HeatmapCard, HeatmapOption, Type as HeatmapType
@@ -95,19 +96,22 @@ async def heatmap(
 
     try:
         submissions = ap.fetch_submissions(username)
-    except ValueError as e:
-        card = ErrorCard(e.args[0], e.args[1])
-        svg = io.BytesIO(bytes(card.render(), "utf-8")).getvalue()
+    except ValidationError as e:
+        err = e.errors()[0]
+        card = ErrorCard(f'Location: {err.get("loc")}, Input: {err.get("input")}', err.get("msg"))
         headers = {
             "Cache-Control": "no-cache, no-store, must-revalidate",
         }
-        return Response(content=svg, headers=headers, media_type="image/svg+xml")
+    except Exception as e:
+        card = ErrorCard(*e.args)
+        headers = {
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+        }
+    else:
+        card = HeatmapCard(username, submissions, option)
+        headers = {
+            "Cache-Control": f"max-age={ONE_DAY_SECOND // 2},stale-while-revalidate={ONE_DAY_SECOND},s-maxage={ONE_DAY_SECOND}",
+        }
 
-    card = HeatmapCard(username, submissions, option)
     svg = io.BytesIO(bytes(card.render(), "utf-8")).getvalue()
-
-    headers = {
-        "Cache-Control": f"max-age={ONE_DAY_SECOND // 2},stale-while-revalidate={ONE_DAY_SECOND},s-maxage={ONE_DAY_SECOND}",
-    }
-
     return Response(content=svg, headers=headers, media_type="image/svg+xml")

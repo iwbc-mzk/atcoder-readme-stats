@@ -3,7 +3,7 @@ from src.cards.card import Card
 
 class ErrorCard(Card):
     def __init__(
-        self, message: str, secondary_message: str, title="Something went wrong!"
+        self, message: str="", secondary_message: str="", title="Something went wrong!"
     ) -> None:
         self._message = message
         self._secondary_message = secondary_message
