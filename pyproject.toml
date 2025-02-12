@@ -4,12 +4,12 @@ version = "0.1.0"
 description = ""
 authors = ["iwbc-mzk <46069337+iwbc-mzk@users.noreply.github.com>"]
 readme = "README.md"
-packages = [{include = "atcoder_readme_stats"}]
+packages = [{ include = "atcoder_readme_stats" }]
 
 [tool.poetry.dependencies]
 python = "^3.9"
 fastapi = "^0.109.2"
-uvicorn = {extras = ["standard"], version = "^0.22.0"}
+uvicorn = { extras = ["standard"], version = "^0.22.0" }
 beautifulsoup4 = "^4.12.2"
 requests = "^2.31.0"
 
@@ -35,3 +35,6 @@ addopts = [
     # "--cov-report=html"
 ]
 testpaths = "tests"
+
+[tool.poetry.requires-plugins]
+poetry-plugin-export = ">=1.8"
