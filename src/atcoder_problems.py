@@ -18,7 +18,7 @@ class Submission(BaseModel):
     point: float
     length: int
     result: str
-    execution_time: int
+    execution_time: int | None
 
 
 class ProblemModel(BaseModel):
