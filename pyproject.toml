@@ -1,13 +1,17 @@
-[tool.poetry]
+
+[project]
 name = "atcoder-readme-stats"
 version = "0.1.0"
 description = ""
-authors = ["iwbc-mzk <46069337+iwbc-mzk@users.noreply.github.com>"]
+authors = [{name = "iwbc-mzk", email = "46069337+iwbc-mzk@users.noreply.github.com"}]
 readme = "README.md"
+requires-python = ">=3.9"
+
+[tool.poetry]
 packages = [{ include = "atcoder_readme_stats" }]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = ">=3.9"
 fastapi = "^0.109.2"
 uvicorn = { extras = ["standard"], version = "^0.22.0" }
 beautifulsoup4 = "^4.12.2"
